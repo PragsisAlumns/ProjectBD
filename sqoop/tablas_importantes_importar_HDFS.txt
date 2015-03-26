@@ -1,0 +1,46 @@
+############################
+#  MODELO DATOS PIWIK      #
+############################
+
+http://developer.piwik.org/guides/persistence-and-the-mysql-backend
+
+############################
+#         TABLAS           #
+############################
+
+
+piwik_goal
+	idgoal
+	pattern
+
+piwik_log_link_visit_action (sirve para ver la secuencia de páginas que ha llevado un usuario)
+	idvisit
+	idvistor
+	idaction_url
+	idaction_url_ref
+
+piwik_log_conversion
+	idvisit
+	idvisitor
+	idaction_url
+	url
+
+piwik_log_action (especifica la url de un idaction)
+	idaction
+	name
+	
+
+
+############################
+#         SQOOP            #
+############################
+
+sqoop import \
+--connect jdbc:mysql://dev.loudacre.com/test \
+--username training --password training \
+--table piwik_goal \
+--columns "idgoal,pattern" \
+--target-dir /piwik \
+--null-non-string '\\N'
+
+
