@@ -12,8 +12,11 @@
 
 #IMPORTING TABLES.
 
-sqoop import --connect jdbc:mysql://dev.loudacre.com/test --username training --password training --table piwik_log_link_visit_action --target-dir /piwik/log_link_visit_action --null-non-string '\\N'
-
+sqoop import --connect jdbc:mysql://dev.loudacre.com/test --username training --password training \
+--query 'SELECT idvisitor, idvisit, idaction_url, idaction_url_ref FROM piwik_log_link_visit_action WHERE $CONDITIONS' \
+--split-by idvisit \
+--target-dir /piwik/log_link_visit_action \
+--null-non-string '\\N'
 
 
 #sqoop import --connect jdbc:mysql://dev.loudacre.com/test --username training --password training --table piwik_goal --target-dir /piwik/goal --null-non-string '\\N'
