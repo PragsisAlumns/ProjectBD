@@ -1,0 +1,6 @@
+CONFIGURACION DE GIT.
+
+Configuracion del acceso para subir cambios.
+
+Vamos a necesitar tambien tener configurado nuestro certificado tanto en nuestra maquina como en github para poder actualizar o subir nuestro codigo.
+En esta web podemos encontrar como hacerlo: https://help.github.com/articles/generating-ssh-keys/
