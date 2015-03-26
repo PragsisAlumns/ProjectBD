@@ -6,6 +6,16 @@ mysql> use test;
 mysql>source /home/training/training_materials/bigdata/project/backup.sql;
 
 
+<<<<<<< HEAD
+=======
+LAS TABLAS QUE NOS VAN A RESULTA UTILES PARA NUESTROS CALCULOS VAN A SER:
+--piwik_goal
+--piwik_log_action
+--piwik_log_conversion
+--piwik_log_link_visit_action
+
+
+>>>>>>> branch 'develop' of https://github.com/PragsisAlumns/ProjectBD.git
 PARA MAS INFORMACIÓN SOBRE LAS TABLAS https://developer.piwik.org/guides/persistence-and-the-mysql-backend
 
 
