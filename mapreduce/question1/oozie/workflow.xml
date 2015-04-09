@@ -1,0 +1,81 @@
+<workflow-app name="Most Active Base Station" xmlns="uri:oozie:workflow:0.4">
+    <start to="BaseStationImport"/>
+    <action name="BaseStationImport">
+        <sqoop xmlns="uri:oozie:sqoop-action:0.2">
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <prepare>
+                  <delete path="${nameNode}${baseStationDir} "/>
+            </prepare>
+            <command>import --connect jdbc:mysql://dev.loudacre.com/loudacre --table basestations --username training --password training --target-dir ${baseStationDir} --fields-terminated-by &quot;\t&quot;</command>
+        </sqoop>
+        <ok to="MostActiveStation"/>
+        <error to="kill"/>
+    </action>
+    <action name="MostActiveStation">
+        <map-reduce>
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <prepare>
+                  <delete path="${nameNode}${mostActiveDir}"/>
+            </prepare>
+            <configuration>
+                <property>
+                    <name>maxstations</name>
+                    <value>10</value>
+                </property>
+                <property>
+                    <name>timewindow</name>
+                    <value>60</value>
+                </property>
+                <property>
+                    <name>mapreduce.map.class</name>
+                    <value>com.loudacre.mostactivestation.DistanceMapper</value>
+                </property>
+                <property>
+                    <name>mapreduce.reduce.class</name>
+                    <value>com.loudacre.mostactivestation.ActivityByStationReducer</value>
+                </property>
+                <property>
+                    <name>mapred.input.dir</name>
+                    <value>${deviceDataDir}</value>
+                </property>
+                <property>
+                    <name>mapred.output.dir</name>
+                    <value>${mostActiveDir}</value>
+                </property>
+                <property>
+                    <name>basestationlist</name>
+                    <value>${baseStationDir}</value>
+                </property>
+                <property>
+                    <name>mapred.mapper.new-api</name>
+                    <value>true</value>
+                </property>
+                <property>
+                    <name>mapred.reducer.new-api</name>
+                    <value>true</value>
+                </property>
+                <property>
+                    <name>mapred.mapoutput.value.class</name>
+                    <value>com.loudacre.data.BaseStation</value>
+                </property>
+            </configuration>
+        </map-reduce>
+        <ok to="MostActiveExport"/>
+        <error to="kill"/>
+    </action>
+    <action name="MostActiveExport">
+        <sqoop xmlns="uri:oozie:sqoop-action:0.2">
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <command>export --connect jdbc:mysql://dev.loudacre.com/loudacre --table mostactivestations --username training --password training --export-dir ${mostActiveDir} --input-fields-terminated-by \t --columns activity_time,activity,station_num --update-mode allowinsert</command>
+        </sqoop>
+        <ok to="end"/>
+        <error to="kill"/>
+    </action>
+    <kill name="kill">
+        <message>Action failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
+    </kill>
+    <end name="end"/>
+</workflow-app>
