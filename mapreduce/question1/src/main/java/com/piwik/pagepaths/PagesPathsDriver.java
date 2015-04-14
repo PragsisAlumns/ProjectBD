@@ -40,12 +40,32 @@ public class PagesPathsDriver extends Configured implements Tool {
 		job.setOutputFormatClass(TextOutputFormat.class);
 		
 		//Setting map output 
-		job.setMapOutputKeyClass(Text.class);
+		job.setMapOutputKeyClass(IntPairWritable.class);
 		job.setMapOutputValueClass(Text.class);
 		
 		//Setting reduce output
-		job.setOutputKeyClass(Text.class);
-		job.setOutputValueClass(LongWritable.class);
+		job.setOutputKeyClass(LongWritable.class);
+		job.setOutputValueClass(Text.class);
+		
+		/* 
+		 * set sort comparator class so that idvisit/idss keys are
+		 * sorted first in ascending order by name, then descending order by ids 
+		 */
+		job.setSortComparatorClass(IdVisitIdssComparator.class);
+		
+		/* 
+		 * set the grouping comparator class so that all idvisit/idss keys
+		 * with the same idvisit are grouped into the same call to the 
+		 * reduce method
+		 */
+		job.setGroupingComparatorClass(IdVisitComparator.class);
+
+		/*
+		 * set custom partitioner so that string pair keys with the same 
+		 * last idvisit go to the same reducer.
+		 */
+		job.setPartitionerClass(PairPagePartitioner.class);
+		
 		
 		return job.waitForCompletion(true) ? 0 : 1;
 	}

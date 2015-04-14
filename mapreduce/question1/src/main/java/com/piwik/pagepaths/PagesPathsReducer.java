@@ -16,11 +16,11 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
-public class PagesPathsReducer extends Reducer<Text, Text, Text, LongWritable> {
+public class PagesPathsReducer extends Reducer<IntPairWritable, Text, LongWritable, Text> {
 
 	
 	@Override
-	public void reduce(Text key, Iterable<Text> values, Context context) throws IOException,
+	public void reduce(IntPairWritable key, Iterable<Text> values, Context context) throws IOException,
 			InterruptedException {
 		
 		//Counting the number of pages
@@ -28,14 +28,26 @@ public class PagesPathsReducer extends Reducer<Text, Text, Text, LongWritable> {
 		String totalUserIDs = "";
 		Hashtable<String,String> totalUsers = new Hashtable<String,String>();
 		
-		for (Text id : values){
-			if (totalUsers.get(id.toString()) == null){
-				visits++;
-				totalUsers.put(id.toString(),"1");
+		String lastPage = "";
+		String paths="";
+		
+		//For each couple of pages as a values 
+		for (Text line : values){
+			String[] pages = line.toString().split(",");
+			
+			if (lastPage.equals("")){ //for the first value
+				paths = pages[0]+","+pages[1];
+			} else { //if the last page from the previous value is the same that the first page in the current one
+				if (lastPage.equals(pages[0])){
+					paths = paths.concat(","+pages[1]);
+				} else {//new path found, so to include as a new path
+					paths = paths.concat("#"+pages[0]+","+pages[1]);
+				}	
 			}
+			lastPage = pages[1];
 		}
 		
-		context.write(new Text(key), new LongWritable(visits));
+		context.write(new LongWritable(key.idVisit), new Text(paths));
 	}
 
 	

@@ -15,21 +15,26 @@ import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.log4j.Logger;
 
 
-public class PagesPathsMapper extends Mapper<LongWritable, Text, Text, Text> {
+public class PagesPathsMapper extends Mapper<LongWritable, Text, IntPairWritable, Text> {
 	Logger logger = Logger.getLogger(PagesPathsMapper.class);
 	
 	@Override
 	public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 		
-		//Select the page id "from" and "to"
+		//Splitting lines 
 		String[] row = value.toString().split(",");
-		String idvisitor = row[1];
+		
+		//Selecting elements for the key IntPairWritable
+		int idvisit = Integer.parseInt(row[1]);
+		int idSs = Integer.parseInt(row[0]);
+		
+		//Selecting elements for value
 		String fromPage = row[3];
 		String toPage = row[2];
 		
 		
 		// Emit pages couple 
-		context.write(new Text(idvisitor), new Text(fromPage+"_"+toPage));
+		context.write(new IntPairWritable(idvisit,idSs), new Text(fromPage+","+toPage));
 		
 	}
 
