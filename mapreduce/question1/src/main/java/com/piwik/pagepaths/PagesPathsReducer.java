@@ -24,12 +24,9 @@ public class PagesPathsReducer extends Reducer<IntPairWritable, Text, LongWritab
 			InterruptedException {
 		
 		//Counting the number of pages
-		Long visits = 0L;
-		String totalUserIDs = "";
-		Hashtable<String,String> totalUsers = new Hashtable<String,String>();
-		
 		String lastPage = "";
 		String paths="";
+		String routes="";
 		
 		//For each couple of pages as a values 
 		for (Text line : values){
@@ -46,8 +43,15 @@ public class PagesPathsReducer extends Reducer<IntPairWritable, Text, LongWritab
 			}
 			lastPage = pages[1];
 		}
+		/*
+		//Looking for all routes between two pages in each path by visit
+		String[] singlePaths = paths.split("#");
+		for (String path : singlePaths ){
+			
+		}
+		*/
 		
-		context.write(new LongWritable(key.idVisit), new Text(paths));
+		context.write(new LongWritable(key.idVisit), new Text(routes));
 	}
 
 	
