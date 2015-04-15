@@ -46,7 +46,6 @@ public class PagesPathsTest {
 		mapReduceDriver.setMapper(countPairPageMapper);
 		mapReduceDriver.setReducer(countPairPageReducer);
 		
-	
 	}
 
 	/*
@@ -106,7 +105,7 @@ public class PagesPathsTest {
 		reduceDriver.withInput(key, values);
 
 		//Then
-		reduceDriver.withOutput(new LongWritable(key.getLeft()), new Text("0,2#0,2,4#0,2,4,2#2,4#2,4,2#4,2"));
+		reduceDriver.withOutput(new LongWritable(key.getLeft()), new Text("0,2,4,2"));
 
 		reduceDriver.runTest();
 		
@@ -129,7 +128,7 @@ public class PagesPathsTest {
 		reduceDriver.withInput(key, values);
 
 		//Then
-		reduceDriver.withOutput(new LongWritable(key.getLeft()), new Text("0,2#0,2,4#0,2,4,2#2,4#2,4,2#4,2#3,4#3,4,2#4,2#8,4"));
+		reduceDriver.withOutput(new LongWritable(key.getLeft()), new Text("0,2,4,2#3,4,2#8,4"));
 
 		reduceDriver.runTest();
 		
