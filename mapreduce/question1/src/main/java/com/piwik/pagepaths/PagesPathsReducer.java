@@ -16,6 +16,8 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
+import com.piwik.common.IntPairWritable;
+
 public class PagesPathsReducer extends Reducer<IntPairWritable, Text, LongWritable, Text> {
 
 	
@@ -44,7 +46,7 @@ public class PagesPathsReducer extends Reducer<IntPairWritable, Text, LongWritab
 			lastPage = pages[1];
 		}
 		
-		context.write(new LongWritable(key.idVisit), new Text(paths));
+		context.write(new LongWritable(key.getLeft()), new Text(paths));
 	}
 
 	

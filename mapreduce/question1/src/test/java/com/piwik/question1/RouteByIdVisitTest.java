@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mrunit.mapreduce.MapDriver;
 import org.apache.hadoop.mrunit.mapreduce.MapReduceDriver;
@@ -14,11 +15,13 @@ import org.apache.hadoop.mrunit.mapreduce.ReduceDriver;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.piwik.common.IntPairWritable;
+import com.piwik.common.RouteIdVisitWritable;
 import com.piwik.pagepaths.PagesPathsMapper;
 import com.piwik.pagepaths.PagesPathsReducer;
+import com.piwik.routesbyvisit.RouteByIdVisitMapper;
+import com.piwik.routesbyvisit.RouteByIdVisitReducer;
 
-public class PagesPathsTest {
+public class RouteByIdVisitTest {
 
 	MapDriver mapDriver;
 	ReduceDriver reduceDriver;
@@ -31,20 +34,20 @@ public class PagesPathsTest {
 	public void setUp() {
 	
 		// Set up the mapper test harness.
-		PagesPathsMapper countPairPageMapper = new PagesPathsMapper();
+		RouteByIdVisitMapper routeByIdVisitMapper = new RouteByIdVisitMapper();
 
 		mapDriver = new MapDriver<Text, Text, Text, Text>();
-		mapDriver.setMapper(countPairPageMapper);
+		mapDriver.setMapper(routeByIdVisitMapper);
 
 		// Set up the reducer test harness.
-		PagesPathsReducer countPairPageReducer = new PagesPathsReducer();
+		RouteByIdVisitReducer routeByIdVisitReducer = new RouteByIdVisitReducer();
 		reduceDriver = new ReduceDriver<Text, Text, Text, LongWritable>();
-		reduceDriver.setReducer(countPairPageReducer);
+		reduceDriver.setReducer(routeByIdVisitReducer);
 
 		// Set up the mapper/reducer test harness.
 		mapReduceDriver = new MapReduceDriver<LongWritable, Text, LongWritable, Text, Text, LongWritable>();
-		mapReduceDriver.setMapper(countPairPageMapper);
-		mapReduceDriver.setReducer(countPairPageReducer);
+		mapReduceDriver.setMapper(routeByIdVisitMapper);
+		mapReduceDriver.setReducer(routeByIdVisitReducer);
 		
 	}
 
@@ -56,18 +59,17 @@ public class PagesPathsTest {
 	public void testMapper() throws IOException {
 		
 		//Given
-		String lineHDFS = "1,23,2,0";
-		IntPairWritable key = new IntPairWritable(23,1);
-		String value = "0,2";
-		
+		String lineHDFS = "1,23,2,0#2,3";
+	
 		//When		
-		mapDriver.withInput(new LongWritable(1), new Text(lineHDFS));
+		mapDriver.withInput(new LongWritable(1), new Text(lineHDFS))
+		.withOutput(new RouteIdVisitWritable("23,2",1), NullWritable.get())
+		.withOutput(new RouteIdVisitWritable("23,2,0",1), NullWritable.get())
+		.withOutput(new RouteIdVisitWritable("2,0",1), NullWritable.get())
+		.withOutput(new RouteIdVisitWritable("2,3",1), NullWritable.get())
+		.runTest();
 
-		//Then
-		mapDriver.withOutput(key, new Text(value));
-
-		mapDriver.runTest();
-		
+	
 	}
 
 	/*

@@ -1,11 +1,14 @@
-package com.piwik.pagepaths;
+package com.piwik.routesbyvisit;
+
+import java.math.BigInteger;
 
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.lib.partition.HashPartitioner;
 
 import com.piwik.common.IntPairWritable;
+import com.piwik.common.RouteIdVisitWritable;
 
-public class PairPagePartitioner<K2, V2> extends
+public class RouteByIdVisitPartitioner<K2, V2> extends
 		HashPartitioner<IntPairWritable, Text> {
 
 	/**
@@ -13,7 +16,7 @@ public class PairPagePartitioner<K2, V2> extends
 	 * that all keys with the same last name go to the same reducer, even if  second part
 	 * of the key (birth year) is different.
 	 */
-	public int getPartition(IntPairWritable key, Text value, int numReduceTasks) {
-		return (key.getLeft() & Integer.MAX_VALUE) % numReduceTasks;
+	public int getPartition(RouteIdVisitWritable key, Text value, int numReduceTasks) {
+		return (key.hashCode() & Integer.MAX_VALUE) % numReduceTasks;
 	}
 }

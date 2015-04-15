@@ -1,4 +1,4 @@
-package com.piwik.pagepaths;
+package com.piwik.common;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -6,40 +6,40 @@ import java.io.IOException;
 
 import org.apache.hadoop.io.WritableComparable;
 
-public class IntPairWritable implements WritableComparable<IntPairWritable> {
+public class RouteIdVisitWritable implements WritableComparable<RouteIdVisitWritable> {
 
-  int idVisit;
-  int idSs;
+  String route;
+  long idVisit;
 
   /**
    * Empty constructor - required for serialization.
    */ 
-  public IntPairWritable() {
+  public RouteIdVisitWritable() {
 
   }
 
   /**
    * Constructor with two integers provided as input.
    */ 
-  public IntPairWritable(int left, int right) {
-    this.idVisit = left;
-    this.idSs = right;
+  public RouteIdVisitWritable(String route, long idVisit) {
+    this.route = route;
+    this.idVisit = idVisit;
   }
 
   /**
    * Serializes the fields of this object to out.
    */
   public void write(DataOutput out) throws IOException {
-    out.writeInt(idVisit);
-    out.writeInt(idSs);
+    out.writeUTF(route);
+    out.writeLong(idVisit);
   }
 
   /**
    * Deserializes the fields of this object from in.
    */
   public void readFields(DataInput in) throws IOException {
-    idVisit = in.readInt();
-    idSs = in.readInt();
+    route = in.readUTF();
+    idVisit = in.readLong();
   }
 
   /**
@@ -47,30 +47,30 @@ public class IntPairWritable implements WritableComparable<IntPairWritable> {
    * comparing the left integer first. If the left integer are equal,
    * then the right integer are compared.
    */
-  public int compareTo(IntPairWritable other) {
-    int result = idVisit - other.idVisit;
-    
-    if (result == 0){
-    	result = idSs - other.idSs;
-    }
+  public int compareTo(RouteIdVisitWritable other) {
+	  int result = route.compareTo(other.route);
+	  if (result == 0) {
+		  result = (int) (idVisit - other.idVisit);
+	    }
+	 
     return result;
   }
 
   /* getters and setters for the two objects in the pair */
-  public int getLeft() {
+  public String getRoute() {
+	  return route;
+  }
+  
+  public long getIdVisit() {
 	  return idVisit;
   }
   
-  public int getRight() {
-	  return idSs;
+  public void  setRoute(String route) {
+	  this.route = route;
   }
   
-  public void  setLeft(int left) {
-	  this.idVisit = left;
-  }
-  
-  public void setRight(int right) {
-	  this.idSs = right;
+  public void setIdVisit(int idVisit) {
+	  this.idVisit = idVisit;
   }
 
   /**
@@ -79,7 +79,7 @@ public class IntPairWritable implements WritableComparable<IntPairWritable> {
    * a comma. For example: "(left,right)".
    */
   public String toString() {
-    return "(" + idVisit + "," + idSs + ")";
+    return "(" + route + "," + idVisit + ")";
   }
 
   /**
@@ -97,10 +97,10 @@ public class IntPairWritable implements WritableComparable<IntPairWritable> {
   		return false;
   	if (getClass() != obj.getClass())
   		return false;
-  	IntPairWritable other = (IntPairWritable) obj;
-  	if (idSs != other.idSs)
-  		return false;
+  	RouteIdVisitWritable other = (RouteIdVisitWritable) obj;
   	if (idVisit != other.idVisit)
+  		return false;
+  	if (route != other.route)
   		return false;
   	return true;
   }
@@ -110,8 +110,8 @@ public class IntPairWritable implements WritableComparable<IntPairWritable> {
   public int hashCode() {
   	final int prime = 31;
   	int result = 1;
-  	result = prime * result + idSs;
-  	result = prime * result + idVisit;
+  	result = prime * result + (int)idVisit;
+  	result = prime * result + ((route == null) ? 0 : route.hashCode());
   	return result;
   }
 

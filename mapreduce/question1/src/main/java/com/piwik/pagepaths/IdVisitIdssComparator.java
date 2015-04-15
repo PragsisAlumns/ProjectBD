@@ -9,6 +9,8 @@ import java.io.IOException;
 import org.apache.hadoop.io.WritableComparable;
 import org.apache.hadoop.io.WritableComparator;
 
+import com.piwik.common.IntPairWritable;
+
 
 public class IdVisitIdssComparator extends WritableComparator {
 
