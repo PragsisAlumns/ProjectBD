@@ -43,14 +43,23 @@ public class PagesPathsReducer extends Reducer<IntPairWritable, Text, LongWritab
 			}
 			lastPage = pages[1];
 		}
-		/*
+		
 		//Looking for all routes between two pages in each path by visit
 		String[] singlePaths = paths.split("#");
-		for (String path : singlePaths ){
-			
+		for (String path : singlePaths ){ //for each path
+			String[] pages = path.split(","); //Split by pages
+			for (int i=0; i<pages.length-1; i++){ 
+				for (int f=i+1; f<pages.length; f++){
+					routes = routes.concat(pages[i]);
+					for (int t=i+1; t<=f; t++){
+						routes = routes.concat(","+pages[t]);
+					}
+					routes = routes.concat("#");
+				}
+			}
 		}
-		*/
 		
+		routes = routes.substring(0, routes.length()-1);
 		context.write(new LongWritable(key.idVisit), new Text(routes));
 	}
 

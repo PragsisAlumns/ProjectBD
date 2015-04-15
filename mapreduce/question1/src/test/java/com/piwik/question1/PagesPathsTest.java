@@ -76,6 +76,24 @@ public class PagesPathsTest {
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
+	public void testOnlyTwoPagesReducer() throws IOException {
+		//Given
+		List<Text> values = new ArrayList<Text>();
+		values.add(new Text("0,2"));
+		IntPairWritable key = new IntPairWritable(2,0);
+				
+		//When
+		reduceDriver.withInput(key, values);
+
+		//Then
+		reduceDriver.withOutput(new LongWritable(key.getLeft()), new Text("0,2"));
+
+		reduceDriver.runTest();
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
 	public void testReducer() throws IOException {
 		//Given
 		List<Text> values = new ArrayList<Text>();
@@ -88,7 +106,7 @@ public class PagesPathsTest {
 		reduceDriver.withInput(key, values);
 
 		//Then
-		reduceDriver.withOutput(new LongWritable(key.getLeft()), new Text("0,2,4,2"));
+		reduceDriver.withOutput(new LongWritable(key.getLeft()), new Text("0,2#0,2,4#0,2,4,2#2,4#2,4,2#4,2"));
 
 		reduceDriver.runTest();
 		
@@ -111,7 +129,7 @@ public class PagesPathsTest {
 		reduceDriver.withInput(key, values);
 
 		//Then
-		reduceDriver.withOutput(new LongWritable(key.getLeft()), new Text("0,2,4,2#3,4,2#8,4"));
+		reduceDriver.withOutput(new LongWritable(key.getLeft()), new Text("0,2#0,2,4#0,2,4,2#2,4#2,4,2#4,2#3,4#3,4,2#4,2#8,4"));
 
 		reduceDriver.runTest();
 		
@@ -130,12 +148,12 @@ public class PagesPathsTest {
 		String value = "0,2";
 	
 		//When
-		mapReduceDriver.withInput(key, new Text(value));
+		mapReduceDriver.withInput(new LongWritable(1), new Text(lineHDFS));
 		
 		//Then
-		mapReduceDriver.withOutput(new LongWritable(key.getLeft()), new Text("0,2"));
+		mapReduceDriver.withOutput(new LongWritable(key.getLeft()), new Text(value));
 		
-		reduceDriver.runTest();
+		mapReduceDriver.runTest();
 	}
 }
 

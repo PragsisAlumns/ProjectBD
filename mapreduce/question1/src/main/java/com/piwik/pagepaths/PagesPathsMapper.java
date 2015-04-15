@@ -32,7 +32,6 @@ public class PagesPathsMapper extends Mapper<LongWritable, Text, IntPairWritable
 		String fromPage = row[3];
 		String toPage = row[2];
 		
-		
 		// Emit pages couple 
 		context.write(new IntPairWritable(idvisit,idSs), new Text(fromPage+","+toPage));
 		
