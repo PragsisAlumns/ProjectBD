@@ -15,6 +15,7 @@ import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
 
 import com.piwik.common.IntPairWritable;
+import com.piwik.question1.RouteByIdVisitTest;
 
 
 public class RouteByIdVisitDriver extends Configured implements Tool {
@@ -46,12 +47,12 @@ public class RouteByIdVisitDriver extends Configured implements Tool {
 		job.setOutputFormatClass(TextOutputFormat.class);
 		
 		//Setting map output 
-		job.setMapOutputKeyClass(IntPairWritable.class);
+		job.setMapOutputKeyClass(RouteByIdVisitTest.class);
 		job.setMapOutputValueClass(Text.class);
 		
 		//Setting reduce output
-		job.setOutputKeyClass(LongWritable.class);
-		job.setOutputValueClass(Text.class);
+		job.setOutputKeyClass(Text.class);
+		job.setOutputValueClass(LongWritable.class);
 		
 		//Setting partitioner
 		job.setPartitionerClass(RouteByIdVisitPartitioner.class);

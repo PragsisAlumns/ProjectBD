@@ -36,16 +36,16 @@ public class RouteByIdVisitTest {
 		// Set up the mapper test harness.
 		RouteByIdVisitMapper routeByIdVisitMapper = new RouteByIdVisitMapper();
 
-		mapDriver = new MapDriver<Text, Text, Text, Text>();
+		mapDriver = new MapDriver<LongWritable, Text, RouteIdVisitWritable, NullWritable>();
 		mapDriver.setMapper(routeByIdVisitMapper);
 
 		// Set up the reducer test harness.
 		RouteByIdVisitReducer routeByIdVisitReducer = new RouteByIdVisitReducer();
-		reduceDriver = new ReduceDriver<Text, Text, Text, LongWritable>();
+		reduceDriver = new ReduceDriver<RouteIdVisitWritable, NullWritable, Text, LongWritable>();
 		reduceDriver.setReducer(routeByIdVisitReducer);
 
 		// Set up the mapper/reducer test harness.
-		mapReduceDriver = new MapReduceDriver<LongWritable, Text, LongWritable, Text, Text, LongWritable>();
+		mapReduceDriver = new MapReduceDriver<LongWritable, Text, RouteIdVisitWritable, NullWritable, Text, LongWritable>();
 		mapReduceDriver.setMapper(routeByIdVisitMapper);
 		mapReduceDriver.setReducer(routeByIdVisitReducer);
 		
@@ -59,15 +59,15 @@ public class RouteByIdVisitTest {
 	public void testMapper() throws IOException {
 		
 		//Given
-		String lineHDFS = "1,23,2,0#2,3";
+		String lineHDFS = "1,23,2";
 	
 		//When		
-		mapDriver.withInput(new LongWritable(1), new Text(lineHDFS))
-		.withOutput(new RouteIdVisitWritable("23,2",1), NullWritable.get())
-		.withOutput(new RouteIdVisitWritable("23,2,0",1), NullWritable.get())
-		.withOutput(new RouteIdVisitWritable("2,0",1), NullWritable.get())
-		.withOutput(new RouteIdVisitWritable("2,3",1), NullWritable.get())
-		.runTest();
+		mapDriver.withInput(new LongWritable(1), new Text(lineHDFS));
+		
+		//Then
+		mapDriver.withOutput(new RouteIdVisitWritable("23,2",1), NullWritable.get());
+		
+		mapDriver.runTest();
 
 	
 	}
@@ -78,6 +78,7 @@ public class RouteByIdVisitTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testOnlyTwoPagesReducer() throws IOException {
+		/*
 		//Given
 		List<Text> values = new ArrayList<Text>();
 		values.add(new Text("0,2"));
@@ -90,6 +91,7 @@ public class RouteByIdVisitTest {
 		reduceDriver.withOutput(new LongWritable(key.getLeft()), new Text("0,2"));
 
 		reduceDriver.runTest();
+		*/
 		
 	}
 	
@@ -97,45 +99,22 @@ public class RouteByIdVisitTest {
 	@Test
 	public void testReducer() throws IOException {
 		//Given
-		List<Text> values = new ArrayList<Text>();
-		values.add(new Text("0,2"));
-		values.add(new Text("2,4"));
-		values.add(new Text("4,2"));
-		IntPairWritable key = new IntPairWritable(2,0);
+		List<NullWritable> values = new ArrayList<NullWritable>();
+		values.add(NullWritable.get());
+		values.add(NullWritable.get());
+		values.add(NullWritable.get());
+		Text key = new Text("2,3,567");
 				
 		//When
 		reduceDriver.withInput(key, values);
 
 		//Then
-		reduceDriver.withOutput(new LongWritable(key.getLeft()), new Text("0,2,4,2"));
+		reduceDriver.withOutput(new Text("2,3"), new LongWritable(567));
 
 		reduceDriver.runTest();
 		
 	}
 	
-	@SuppressWarnings("unchecked")
-	@Test
-	public void testReducerWithSeveralPathsForTheSameVisit() throws IOException {
-		//Given
-		List<Text> values = new ArrayList<Text>();
-		values.add(new Text("0,2"));
-		values.add(new Text("2,4"));
-		values.add(new Text("4,2"));
-		values.add(new Text("3,4"));
-		values.add(new Text("4,2"));
-		values.add(new Text("8,4"));
-		IntPairWritable key = new IntPairWritable(2,0);
-						
-		//When
-		reduceDriver.withInput(key, values);
-
-		//Then
-		reduceDriver.withOutput(new LongWritable(key.getLeft()), new Text("0,2,4,2#3,4,2#8,4"));
-
-		reduceDriver.runTest();
-		
-	}
-
 	/*
 	 * Test the mapper and reducer working together.
 	 */
@@ -145,14 +124,13 @@ public class RouteByIdVisitTest {
 		
 		//Given
 		String lineHDFS = "1,23,2,0";
-		IntPairWritable key = new IntPairWritable(23,1);
-		String value = "0,2";
-	
+		RouteIdVisitWritable key = new RouteIdVisitWritable("23,2",1);
+
 		//When
 		mapReduceDriver.withInput(new LongWritable(1), new Text(lineHDFS));
 		
 		//Then
-		mapReduceDriver.withOutput(new LongWritable(key.getLeft()), new Text(value));
+		mapReduceDriver.withOutput(key, NullWritable.get());
 		
 		mapReduceDriver.runTest();
 	}
