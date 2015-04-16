@@ -30,12 +30,11 @@ public class RouteVisitPageDriver extends Configured implements Tool {
 		
 		//Create global variable
 		Configuration conf=new Configuration();
-		conf.setInt("countRoute", 0);
 		
 		// Create the job
 		Job job = Job.getInstance(getConf());
 		job.setJarByClass(RouteVisitPageDriver.class);
-		job.setJobName("Question 1: How many users are visiting page X and after page Y");
+		job.setJobName("Question 2: How many routes and visits by route are enabled to find page X ");
 
 		FileInputFormat.setInputPaths(job, new Path(args[0]));
 		FileOutputFormat.setOutputPath(job, new Path(args[1]));
@@ -50,19 +49,12 @@ public class RouteVisitPageDriver extends Configured implements Tool {
 		job.setMapOutputKeyClass(RouteIdVisitWritable.class);
 		job.setMapOutputValueClass(NullWritable.class);
 		
-		//Setting combiner to reduce the amount of data in intermediate data
-		job.setCombinerClass(RouteVisitPageCombiner.class);
-		
 		//Setting reduce output
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(LongWritable.class);
 		
 		//Setting partitioner
 		job.setPartitionerClass(RouteVisitPagePartitioner.class);
-		
-		if (job.getCombinerClass() == null) {
-		      throw new Exception("Combiner not set");
-		}
 
 		return job.waitForCompletion(true) ? 0 : 1;
 	}

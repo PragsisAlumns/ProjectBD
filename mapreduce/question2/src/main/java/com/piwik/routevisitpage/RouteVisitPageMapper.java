@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
@@ -19,11 +22,14 @@ import com.piwik.common.IntPairWritable;
 import com.piwik.common.RouteIdVisitWritable;
 
 
-public class RouteVisitPageMapper extends Mapper<LongWritable, Text, RouteIdVisitWritable, NullWritable> {
+public class RouteVisitPageMapper extends Mapper<LongWritable, Text, Text, Text> {
 	Logger logger = Logger.getLogger(RouteVisitPageMapper.class);
 	
 	@Override
 	public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
+		
+		
+		Map<String,Long> pages = new HashMap<String,Long>();
 		
 		//Splitting idvisit and paths 
 		String[] fields = value.toString().split("\t");
@@ -36,17 +42,23 @@ public class RouteVisitPageMapper extends Mapper<LongWritable, Text, RouteIdVisi
 		String pairPage;
 		
 		for (String path : singlePaths ){ //for each path
-			String[] pages = path.split(","); //Split by pages
-			for (int i=0; i<pages.length-1; i++){
-				pairPage = "";
-				for (int f=i+1; f<pages.length; f++){
-					pairPage = pages[i]+","+pages[f];
-					// Emit pages couple 
-					context.write(new RouteIdVisitWritable(pairPage,idvisit), NullWritable.get());
-					pairPage = "";
+			String[] page = path.split(","); //Split by pages
+			for (int i=1; i<page.length-1; i++){
+				Long currentPageValue = pages.get(page[i]);
+				if (currentPageValue != null){
+					pages.put(page[i],currentPageValue+1);
+				} else {
+					pages.put(page[i], 1L);
 				}
 			}
 		}
+		Iterator<Map.Entry<String,Long>> iterator = pages.entrySet().iterator() ;
+		Map.Entry<String, Long> pagesEntry;
+        while(iterator.hasNext()){
+        	pagesEntry = iterator.next();
+			context.write(new Text(pagesEntry.getKey().toString()), new Text(Long.toString(idvisit)));
+		}
+
 	}
 
 }
