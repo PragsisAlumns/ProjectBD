@@ -1,4 +1,4 @@
-package com.piwik.pairpagebyvisit;
+package com.piwik.routevisitpage;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;

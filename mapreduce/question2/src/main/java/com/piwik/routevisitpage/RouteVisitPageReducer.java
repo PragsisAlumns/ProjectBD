@@ -1,4 +1,4 @@
-package com.piwik.pairpagebyvisit;
+package com.piwik.routevisitpage;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;

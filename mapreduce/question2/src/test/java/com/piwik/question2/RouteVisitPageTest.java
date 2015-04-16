@@ -21,8 +21,8 @@ import org.junit.Test;
 import com.piwik.common.RouteIdVisitWritable;
 import com.piwik.pagepaths.PagesPathsMapper;
 import com.piwik.pagepaths.PagesPathsReducer;
-import com.piwik.pairpagebyvisit.RouteVisitPageMapper;
-import com.piwik.pairpagebyvisit.RouteVisitPageReducer;
+import com.piwik.routevisitpage.RouteVisitPageMapper;
+import com.piwik.routevisitpage.RouteVisitPageReducer;
 
 public class RouteVisitPageTest {
 
