@@ -1,4 +1,4 @@
-package com.piwik.routesbyvisit;
+package com.piwik.pairpagebyvisit;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,38 +19,31 @@ import com.piwik.common.IntPairWritable;
 import com.piwik.common.RouteIdVisitWritable;
 
 
-public class RouteByIdVisitMapper extends Mapper<LongWritable, Text, RouteIdVisitWritable, NullWritable> {
-	Logger logger = Logger.getLogger(RouteByIdVisitMapper.class);
+public class PairPageByVisitMapper extends Mapper<LongWritable, Text, RouteIdVisitWritable, NullWritable> {
+	Logger logger = Logger.getLogger(PairPageByVisitMapper.class);
 	
 	@Override
 	public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 		
-		//Splitting lines 
-		String[] lines = value.toString().split("#");
+		//Splitting idvisit and paths 
+		String[] fields = value.toString().split("\t");
 		
-		//Finding idvisit and the first path
-		int indexSeparator = lines[0].indexOf(",");
-		long idvisit = Long.parseLong(lines[0].substring(0, indexSeparator));
-		String firstPath = lines[0].substring(indexSeparator+1,lines[0].length());
-		
-		//
-		String[] singlePaths = lines;
-		singlePaths[0] = firstPath;
-		
-		String route;
+		//Id visit 
+		long idvisit = Long.parseLong(fields[0]);
+
+		//Paths
+		String[] singlePaths = fields[1].split("#");
+		String pairPage;
 		
 		for (String path : singlePaths ){ //for each path
 			String[] pages = path.split(","); //Split by pages
 			for (int i=0; i<pages.length-1; i++){
-				route = "";
+				pairPage = "";
 				for (int f=i+1; f<pages.length; f++){
-					route = route.concat(pages[i]);
-					for (int t=i+1; t<=f; t++){
-						route = route.concat(","+pages[t]);
-					}
+					pairPage = pages[i]+","+pages[f];
 					// Emit pages couple 
-					context.write(new RouteIdVisitWritable(route,idvisit), NullWritable.get());
-					route = "";
+					context.write(new RouteIdVisitWritable(pairPage,idvisit), NullWritable.get());
+					pairPage = "";
 				}
 			}
 		}

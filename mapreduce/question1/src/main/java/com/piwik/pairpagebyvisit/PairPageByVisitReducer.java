@@ -1,4 +1,4 @@
-package com.piwik.routesbyvisit;
+package com.piwik.pairpagebyvisit;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -20,32 +20,44 @@ import org.apache.hadoop.mapreduce.Reducer;
 import com.piwik.common.RouteIdVisitWritable;
 
 
-public class RouteByIdVisitReducer extends Reducer<RouteIdVisitWritable, NullWritable, Text, LongWritable> {
+public class PairPageByVisitReducer extends Reducer<RouteIdVisitWritable, NullWritable, Text, LongWritable> {
 
-	int counter = 0;
+	int counter;
+	String lastRoute;
+	boolean firstTime;
 	
 	@Override
 	public void reduce(RouteIdVisitWritable key, Iterable<NullWritable> values, Context context) throws IOException,
 			InterruptedException {
 		
 		String newRoute = key.getRoute();
-		String lastRoute = "";
-		boolean firstTime = true;
 		
 	    //Counting the number of pages
 		if (lastRoute.equals(newRoute)){
 			counter++;
 		}else {
-			counter = 1;
 			if (!firstTime){
-				context.write(new Text(lastRoute), new LongWritable(counter));
+				context.write(new Text(lastRoute), new LongWritable(counter));	
 			}else {
-				firstTime = false;
+				firstTime=false;
 			}
 			lastRoute = key.getRoute();
+			counter = 1;
 		}
-		
 	}
+	
+	@Override
+	public void run(Context context) throws IOException, InterruptedException {
+		  setup(context);
+		  counter = 0;
+		  lastRoute = "";
+		  firstTime = true;
+		  while (context.nextKey()) {
+		    reduce(context.getCurrentKey(), context.getValues(), context);
+		  }
+		  context.write(new Text(lastRoute), new LongWritable(counter));	
+		  cleanup(context);
+		}
 
 	
 }

@@ -1,4 +1,4 @@
-package com.piwik.routesbyvisit;
+package com.piwik.pairpagebyvisit;
 
 import java.math.BigInteger;
 
@@ -8,7 +8,7 @@ import org.apache.hadoop.mapreduce.lib.partition.HashPartitioner;
 import com.piwik.common.IntPairWritable;
 import com.piwik.common.RouteIdVisitWritable;
 
-public class RouteByIdVisitPartitioner<K2, V2> extends
+public class PairPageByVisitPartitioner<K2, V2> extends
 		HashPartitioner<IntPairWritable, Text> {
 
 	/**
