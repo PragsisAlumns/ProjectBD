@@ -15,7 +15,7 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
 
-import com.piwik.common.RouteIdVisitWritable;
+import com.piwik.common.PageRouteWritable;
 
 
 public class RouteVisitPageDriver extends Configured implements Tool {
@@ -46,7 +46,7 @@ public class RouteVisitPageDriver extends Configured implements Tool {
 		job.setOutputFormatClass(TextOutputFormat.class);
 		
 		//Setting map output 
-		job.setMapOutputKeyClass(RouteIdVisitWritable.class);
+		job.setMapOutputKeyClass(PageRouteWritable.class);
 		job.setMapOutputValueClass(NullWritable.class);
 		
 		//Setting reduce output

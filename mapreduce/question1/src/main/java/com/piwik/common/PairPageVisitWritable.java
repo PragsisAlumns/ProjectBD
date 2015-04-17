@@ -6,23 +6,23 @@ import java.io.IOException;
 
 import org.apache.hadoop.io.WritableComparable;
 
-public class RouteIdVisitWritable implements WritableComparable<RouteIdVisitWritable> {
+public class PairPageVisitWritable implements WritableComparable<PairPageVisitWritable> {
 
-  String route;
+  String pair;
   long idVisit;
 
   /**
    * Empty constructor - required for serialization.
    */ 
-  public RouteIdVisitWritable() {
+  public PairPageVisitWritable() {
 
   }
 
   /**
    * Constructor with two integers provided as input.
    */ 
-  public RouteIdVisitWritable(String route, long idVisit) {
-    this.route = route;
+  public PairPageVisitWritable(String route, long idVisit) {
+    this.pair = route;
     this.idVisit = idVisit;
   }
 
@@ -30,7 +30,7 @@ public class RouteIdVisitWritable implements WritableComparable<RouteIdVisitWrit
    * Serializes the fields of this object to out.
    */
   public void write(DataOutput out) throws IOException {
-    out.writeUTF(route);
+    out.writeUTF(pair);
     out.writeLong(idVisit);
   }
 
@@ -38,7 +38,7 @@ public class RouteIdVisitWritable implements WritableComparable<RouteIdVisitWrit
    * Deserializes the fields of this object from in.
    */
   public void readFields(DataInput in) throws IOException {
-    route = in.readUTF();
+    pair = in.readUTF();
     idVisit = in.readLong();
   }
 
@@ -47,8 +47,8 @@ public class RouteIdVisitWritable implements WritableComparable<RouteIdVisitWrit
    * comparing the left integer first. If the left integer are equal,
    * then the right integer are compared.
    */
-  public int compareTo(RouteIdVisitWritable other) {
-	  int result = route.compareTo(other.route);
+  public int compareTo(PairPageVisitWritable other) {
+	  int result = pair.compareTo(other.pair);
 	  if (result == 0) {
 		  result = (int) (idVisit - other.idVisit);
 	    }
@@ -58,7 +58,7 @@ public class RouteIdVisitWritable implements WritableComparable<RouteIdVisitWrit
 
   /* getters and setters for the two objects in the pair */
   public String getRoute() {
-	  return route;
+	  return pair;
   }
   
   public long getIdVisit() {
@@ -66,7 +66,7 @@ public class RouteIdVisitWritable implements WritableComparable<RouteIdVisitWrit
   }
   
   public void  setRoute(String route) {
-	  this.route = route;
+	  this.pair = route;
   }
   
   public void setIdVisit(int idVisit) {
@@ -79,7 +79,7 @@ public class RouteIdVisitWritable implements WritableComparable<RouteIdVisitWrit
    * a comma. For example: "(left,right)".
    */
   public String toString() {
-    return "(" + route + "," + idVisit + ")";
+    return "(" + pair + "," + idVisit + ")";
   }
 
   /**
@@ -97,10 +97,10 @@ public class RouteIdVisitWritable implements WritableComparable<RouteIdVisitWrit
   		return false;
   	if (getClass() != obj.getClass())
   		return false;
-  	RouteIdVisitWritable other = (RouteIdVisitWritable) obj;
+  	PairPageVisitWritable other = (PairPageVisitWritable) obj;
   	if (idVisit != other.idVisit)
   		return false;
-  	if (route != other.route)
+  	if (pair != other.pair)
   		return false;
   	return true;
   }
@@ -111,7 +111,7 @@ public class RouteIdVisitWritable implements WritableComparable<RouteIdVisitWrit
   	final int prime = 31;
   	int result = 1;
   	result = prime * result + (int)idVisit;
-  	result = prime * result + ((route == null) ? 0 : route.hashCode());
+  	result = prime * result + ((pair == null) ? 0 : pair.hashCode());
   	return result;
   }
 
