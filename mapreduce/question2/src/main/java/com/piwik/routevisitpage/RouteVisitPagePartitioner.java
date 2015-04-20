@@ -17,6 +17,6 @@ public class RouteVisitPagePartitioner<K2, V2> extends
 	 * of the key (birth year) is different.
 	 */
 	public int getPartition(PageRouteWritable key, Text value, int numReduceTasks) {
-		return (Integer.parseInt(key.getPage())& Integer.MAX_VALUE) % numReduceTasks;
+		return (key.getPage().hashCode() & Integer.MAX_VALUE) % numReduceTasks;
 	}
 }

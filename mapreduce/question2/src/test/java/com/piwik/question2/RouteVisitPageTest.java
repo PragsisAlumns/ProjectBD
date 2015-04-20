@@ -34,7 +34,7 @@ public class RouteVisitPageTest {
 	/*
 	 * Set up the test. This method will be called before every test.
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Before
 	public void setUp() {
 	
@@ -117,7 +117,7 @@ public class RouteVisitPageTest {
 
 		
 		List<Pair> expectedOutput = new ArrayList<Pair>();
-		expectedOutput.add(new Pair(new Text("0,1"),new LongWritable(6)));
+		expectedOutput.add(new Pair(new Text("0"),new Text("1,6")));
 				
 		//When
 		reduceDriver.withInput(key, values);
@@ -133,26 +133,57 @@ public class RouteVisitPageTest {
 	public void testReducer() throws IOException {
 
 		//Given
-		[((4,23,2,5,4), 1), ((5,23,2,5,4,5), 1), ((4,3,4), 1), ((3,3,4,3), 1), ((4,3,4,3,4), 1), ((5,2,5), 1), ((4,2,5,4), 1), ((4,3,4), 1)]
-		PageRouteWritable key0 = new PageRouteWritable("4","3,4");
-		PageRouteWritable key1 = new PageRouteWritable("2","23,2");
-		PageRouteWritable key2 = new PageRouteWritable("5","23,2,5");
+
+		PageRouteWritable key0 = new PageRouteWritable("2","23,2");
+		PageRouteWritable key1 = new PageRouteWritable("3","3,4,3");
+		PageRouteWritable key2 = new PageRouteWritable("4","23,2,5,4");
+		PageRouteWritable key3 = new PageRouteWritable("4","3,4");
+		PageRouteWritable key4 = new PageRouteWritable("4","3,4,3,4");
+		PageRouteWritable key5 = new PageRouteWritable("4","2,5,4");
+		PageRouteWritable key6 = new PageRouteWritable("5","23,2,5");
+		PageRouteWritable key7 = new PageRouteWritable("5","2,5");
 		
-		List<LongWritable> values = new ArrayList<LongWritable>();
-		values.add(new LongWritable(1));
+		List<LongWritable> values0 = new ArrayList<LongWritable>();
+		List<LongWritable> values1 = new ArrayList<LongWritable>();
+		List<LongWritable> values2 = new ArrayList<LongWritable>();
+		List<LongWritable> values3 = new ArrayList<LongWritable>();
+		List<LongWritable> values4 = new ArrayList<LongWritable>();
+		List<LongWritable> values5 = new ArrayList<LongWritable>();
+		List<LongWritable> values6 = new ArrayList<LongWritable>();
+		List<LongWritable> values7 = new ArrayList<LongWritable>();
+		
+		values0.add(new LongWritable(1));
+		values1.add(new LongWritable(1));
+		values2.add(new LongWritable(1));
+		values3.add(new LongWritable(1));
+		values3.add(new LongWritable(1));
+		values4.add(new LongWritable(1));
+		values5.add(new LongWritable(1));
+		values6.add(new LongWritable(1));
+		values7.add(new LongWritable(1));
 		
 		List<Pair> expectedOutput = new ArrayList<Pair>();
-		expectedOutput.add(new Pair(new Text("0,3"),new LongWritable(9)));
-		
+		expectedOutput.add(new Pair(new Text("2"),new Text("1,1")));
+		expectedOutput.add(new Pair(new Text("3"),new Text("1,1")));
+		expectedOutput.add(new Pair(new Text("4"),new Text("4,5")));
+		expectedOutput.add(new Pair(new Text("5"),new Text("2,2")));
 		
 		//When
-		reduceDriver.withInput(key0, values)
-		.withInput(key1,values)
-		.withInput(key2,values);
+		reduceDriver.withInput(key0, values0)
+		.withInput(key1,values1)
+		.withInput(key2,values2)
+		.withInput(key3,values3)
+		.withInput(key4,values4)
+		.withInput(key5,values5)
+		.withInput(key6,values6)
+		.withInput(key7,values7);
 
 		//Then
 		List<Pair> result = reduceDriver.run();
 		assertEquals(result.get(0).toString(),expectedOutput.get(0).toString());
+		assertEquals(result.get(1).toString(),expectedOutput.get(1).toString());
+		assertEquals(result.get(2).toString(),expectedOutput.get(2).toString());
+		assertEquals(result.get(3).toString(),expectedOutput.get(3).toString());
 		
 	}
 	
@@ -172,12 +203,11 @@ public class RouteVisitPageTest {
 		values.add(NullWritable.get());
 		
 		List<Pair> expectedOutput = new ArrayList<Pair>();
-		expectedOutput.add(new Pair(new Text("2,1"),new LongWritable(1)));
-		expectedOutput.add(new Pair(new Text("5,3"),new LongWritable(1)));
-		expectedOutput.add(new Pair(new Text("4,3"),new LongWritable(4)));
-		expectedOutput.add(new Pair(new Text("5,3,"),new LongWritable(3)));
+		expectedOutput.add(new Pair(new Text("2"),new Text("1,1")));
+		expectedOutput.add(new Pair(new Text("3"),new Text("1,1")));
+		expectedOutput.add(new Pair(new Text("4"),new Text("4,5")));
+		expectedOutput.add(new Pair(new Text("5"),new Text("3,3")));
 		
-
 		//When
 		mapReduceDriver.withInput(new LongWritable(1), new Text(lineHDFS1))
 		.withInput(new LongWritable(1), new Text(lineHDFS2));

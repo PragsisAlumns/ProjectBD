@@ -47,14 +47,17 @@ public class RouteVisitPageDriver extends Configured implements Tool {
 		
 		//Setting map output 
 		job.setMapOutputKeyClass(PageRouteWritable.class);
-		job.setMapOutputValueClass(NullWritable.class);
+		job.setMapOutputValueClass(LongWritable.class);
 		
 		//Setting reduce output
 		job.setOutputKeyClass(Text.class);
-		job.setOutputValueClass(LongWritable.class);
+		job.setOutputValueClass(Text.class);
 		
 		//Setting partitioner
 		job.setPartitionerClass(RouteVisitPagePartitioner.class);
+		
+		//Setting combiner
+		//job.setCombinerClass(RouteVisitPageCombiner.class);
 
 		return job.waitForCompletion(true) ? 0 : 1;
 	}

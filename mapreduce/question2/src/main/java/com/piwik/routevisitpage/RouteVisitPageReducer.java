@@ -22,10 +22,9 @@ import org.apache.hadoop.mapreduce.Reducer.Context;
 import com.piwik.common.PageRouteWritable;
 
 
-public class RouteVisitPageReducer extends Reducer<PageRouteWritable, LongWritable, Text, LongWritable> {
+public class RouteVisitPageReducer extends Reducer<PageRouteWritable, LongWritable, Text, Text> {
 	long counterRoute;
 	long counterVisit;
-	String lastRoute;
 	String lastPage;
 	boolean firstTime;
 	
@@ -34,32 +33,29 @@ public class RouteVisitPageReducer extends Reducer<PageRouteWritable, LongWritab
 			InterruptedException {
 		
 		String newPage = key.getPage();
+		long numberVisits = 0;
+		
+		//Counting visits by page and route for current key/value
+		for (LongWritable nvisits : values){
+			numberVisits = numberVisits + nvisits.get();
+		}
 		
 	    //Counting the number of visits
-		if (lastPage.equals(newPage)){
-			long numberVisits = 0;
-			
-			for (LongWritable nvisits : values){
-				numberVisits = numberVisits + nvisits.get();
-			}
-			counterVisit = counterVisit + numberVisits;
-			counterRoute++;
-		}else{
-			if (!firstTime){
-				context.write(new Text(lastPage+","+Long.toString(counterRoute)), new LongWritable(counterVisit));
-				counterRoute = 1;
-				counterVisit = 1;
-			}else {
-				firstTime=false;
-				long numberVisits = 0;
-				for (LongWritable nvisits : values){
-					numberVisits = numberVisits + nvisits.get();
-				}
+		if (!firstTime){
+			if (lastPage.equals(newPage)){
 				counterVisit = counterVisit + numberVisits;
 				counterRoute++;
+			}else{
+				context.write(new Text(lastPage), new Text(Long.toString(counterRoute)+","+counterVisit));
+				counterRoute = 1;
+				counterVisit = numberVisits;
 			}
-			lastPage = newPage;
+		}else {
+			firstTime=false;
+			counterRoute = 1;
+			counterVisit = numberVisits;
 		}
+		lastPage = newPage;
 	}
 	
 	@Override
@@ -73,7 +69,7 @@ public class RouteVisitPageReducer extends Reducer<PageRouteWritable, LongWritab
 		  while (context.nextKey()) {
 		    reduce(context.getCurrentKey(), context.getValues(), context);
 		  }
-		  context.write(new Text(lastPage+","+Long.toString(counterRoute)), new LongWritable(counterVisit));	
+		  context.write(new Text(lastPage), new Text(Long.toString(counterRoute)+","+counterVisit));
 		  cleanup(context);
 		}
 

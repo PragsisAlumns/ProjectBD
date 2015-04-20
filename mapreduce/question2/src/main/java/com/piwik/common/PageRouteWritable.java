@@ -49,7 +49,7 @@ public class PageRouteWritable implements WritableComparable<PageRouteWritable> 
    * then the right integer are compared.
    */
   public int compareTo(PageRouteWritable other) {
-	  int result = route.compareTo(other.page);
+	  int result = page.compareTo(other.page);
 	  if (result == 0){
 		  result = route.compareTo(other.route);
 	  }
@@ -114,6 +114,7 @@ public class PageRouteWritable implements WritableComparable<PageRouteWritable> 
   	final int prime = 31;
   	int result = 1;
   	result = prime * result + ((page == null) ? 0 : page.hashCode());
+  	result = prime * result + ((route == null) ? 0 : route.hashCode());
   	return result;
   }
 
