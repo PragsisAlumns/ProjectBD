@@ -46,7 +46,7 @@ public class RouteVisitPageReducer extends Reducer<PageRouteWritable, LongWritab
 				counterVisit = counterVisit + numberVisits;
 				counterRoute++;
 			}else{
-				context.write(new Text(lastPage), new Text(Long.toString(counterRoute)+","+counterVisit));
+				context.write(new Text(lastPage), new Text(counterRoute+","+counterVisit));
 				counterRoute = 1;
 				counterVisit = numberVisits;
 			}
@@ -69,7 +69,7 @@ public class RouteVisitPageReducer extends Reducer<PageRouteWritable, LongWritab
 		  while (context.nextKey()) {
 		    reduce(context.getCurrentKey(), context.getValues(), context);
 		  }
-		  context.write(new Text(lastPage), new Text(Long.toString(counterRoute)+","+counterVisit));
+		  context.write(new Text(lastPage), new Text(counterRoute+","+counterVisit));
 		  cleanup(context);
 		}
 
