@@ -23,6 +23,7 @@ import com.piwik.pagepaths.PagesPathsMapper;
 import com.piwik.pagepaths.PagesPathsReducer;
 import com.piwik.routevisitpage.RouteVisitPageCombiner;
 import com.piwik.routevisitpage.RouteVisitPageMapper;
+import com.piwik.routevisitpage.RouteVisitPagePartitioner;
 import com.piwik.routevisitpage.RouteVisitPageReducer;
 
 public class RouteVisitPageTest {
@@ -50,10 +51,12 @@ public class RouteVisitPageTest {
 
 		// Set up the mapper/reducer test harness.
 		RouteVisitPageCombiner routeVisitPageCombiner = new RouteVisitPageCombiner();
+		RouteVisitPagePartitioner routevisitpagepartitioner = new RouteVisitPagePartitioner();
 		mapReduceDriver = new MapReduceDriver<LongWritable, Text, PageRouteWritable, NullWritable, Text, LongWritable>();
 		mapReduceDriver.setMapper(routeByIdVisitMapper);
 		mapReduceDriver.setReducer(routeByIdVisitReducer);
 		mapReduceDriver.setCombiner(routeVisitPageCombiner);
+	
 		
 	}
 
@@ -65,16 +68,23 @@ public class RouteVisitPageTest {
 	public void testMapper() throws IOException {
 		
 		//Given
-		String lineHDFS = "1	23,2,5,4#3,4,3";
+		String lineHDFS1 = "1	23,2,5,4,5#3,4,3,4";
+		String lineHDFS2 = "2	2,5,4#3,4";
 		List<Pair> expectedOutput = new ArrayList<Pair>();
 		expectedOutput.add(new Pair(new PageRouteWritable("2","23,2"),new LongWritable(1)));
 		expectedOutput.add(new Pair(new PageRouteWritable("5","23,2,5"),new LongWritable(1)));
 		expectedOutput.add(new Pair(new PageRouteWritable("4","23,2,5,4"),new LongWritable(1)));
+		expectedOutput.add(new Pair(new PageRouteWritable("5","23,2,5,4,5"),new LongWritable(1)));
 		expectedOutput.add(new Pair(new PageRouteWritable("4","3,4"),new LongWritable(1)));
 		expectedOutput.add(new Pair(new PageRouteWritable("3","3,4,3"),new LongWritable(1)));
+		expectedOutput.add(new Pair(new PageRouteWritable("4","3,4,3,4"),new LongWritable(1)));
+		expectedOutput.add(new Pair(new PageRouteWritable("5","2,5"),new LongWritable(1)));
+		expectedOutput.add(new Pair(new PageRouteWritable("4","2,5,4"),new LongWritable(1)));
+		expectedOutput.add(new Pair(new PageRouteWritable("4","3,4"),new LongWritable(1)));
 		
 		//When		
-		mapDriver.withInput(new LongWritable(1), new Text(lineHDFS));
+		mapDriver.withInput(new LongWritable(1), new Text(lineHDFS1))
+		.withInput(new LongWritable(1), new Text(lineHDFS2));
 		
 		//Then		
 		List<Pair> result = mapDriver.run();
@@ -83,6 +93,11 @@ public class RouteVisitPageTest {
 		assertEquals(result.get(2).toString(),expectedOutput.get(2).toString());
 		assertEquals(result.get(3).toString(),expectedOutput.get(3).toString());
 		assertEquals(result.get(4).toString(),expectedOutput.get(4).toString());
+		assertEquals(result.get(5).toString(),expectedOutput.get(5).toString());
+		assertEquals(result.get(6).toString(),expectedOutput.get(6).toString());
+		assertEquals(result.get(7).toString(),expectedOutput.get(7).toString());
+		assertEquals(result.get(8).toString(),expectedOutput.get(8).toString());
+		assertEquals(result.get(9).toString(),expectedOutput.get(9).toString());
 	
 	}
 
@@ -118,13 +133,13 @@ public class RouteVisitPageTest {
 	public void testReducer() throws IOException {
 
 		//Given
-		PageRouteWritable key0 = new PageRouteWritable("0","2,0");
-		PageRouteWritable key1 = new PageRouteWritable("0","3,0");
-		PageRouteWritable key2 = new PageRouteWritable("0","4,0");
+		[((4,23,2,5,4), 1), ((5,23,2,5,4,5), 1), ((4,3,4), 1), ((3,3,4,3), 1), ((4,3,4,3,4), 1), ((5,2,5), 1), ((4,2,5,4), 1), ((4,3,4), 1)]
+		PageRouteWritable key0 = new PageRouteWritable("4","3,4");
+		PageRouteWritable key1 = new PageRouteWritable("2","23,2");
+		PageRouteWritable key2 = new PageRouteWritable("5","23,2,5");
 		
 		List<LongWritable> values = new ArrayList<LongWritable>();
 		values.add(new LongWritable(1));
-		values.add(new LongWritable(2));
 		
 		List<Pair> expectedOutput = new ArrayList<Pair>();
 		expectedOutput.add(new Pair(new Text("0,3"),new LongWritable(9)));
