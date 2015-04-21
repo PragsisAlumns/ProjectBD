@@ -1,4 +1,4 @@
-package com.piwik.routevisitpage;
+package com.piwik.convertpage;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -17,23 +17,26 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.Reducer.Context;
 
-import com.piwik.common.PageRouteWritable;
 
+public class ConvertPageReducer extends Reducer<Text, LongWritable, Text, LongWritable> {
 
-public class RouteVisitPageCombiner extends Reducer<PageRouteWritable, LongWritable, PageRouteWritable, LongWritable> {
 	
 	@Override
-	public void reduce(PageRouteWritable key, Iterable<LongWritable> values, Context context) throws IOException,
+	public void reduce(Text key, Iterable<LongWritable> values, Context context) throws IOException,
 			InterruptedException {
-			
-			long counter = 0;
 		
-			for (LongWritable count : values){
-				counter = counter + count.get();
-			}
+		long totalValue = 0;
+		//Sum of values
+		for (LongWritable value : values){
+			totalValue = totalValue + value.get();
+		}
 		
-			context.write(key, new LongWritable(counter));	
+	    //Writing value
+		context.write(key, new LongWritable(totalValue));
+	
 	}
+	
 	
 }
