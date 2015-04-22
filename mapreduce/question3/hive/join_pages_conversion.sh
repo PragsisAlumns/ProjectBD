@@ -12,7 +12,7 @@ totalcount BIGINT
 ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
 LOCATION '/piwik/question3/totalcountpage';
 
-#hadoop jar target/convert-page-1.0-SNAPSHOT.jar com.piwik.convertpage.ConvertPageDriver /piwik/question3/joinpathsconversion /piwik/question3/pageconversion
+#hadoop jar target/convert-page-1.0-SNAPSHOT.jar com.piwik.convertpage.ConvertPageDriver /piwik/question3/joinsinglepathsbyconversion /piwik/question3/pageconversion
 
 #########################
 # piwik_page_conversion #

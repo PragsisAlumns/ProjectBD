@@ -20,9 +20,9 @@ import org.junit.Test;
 
 import com.piwik.common.IntPairWritable;
 import com.piwik.convertpage.ConvertPageCombiner;
-import com.piwik.convertpage.HiveJoinRefactorMapper;
+import com.piwik.convertpage.ConvertPageMapper;
 import com.piwik.convertpage.ConvertPagePartitioner;
-import com.piwik.convertpage.HiveJoinRefactorReducer;
+import com.piwik.convertpage.ConvertPageReducer;
 import com.piwik.pagepaths.PagesPathsMapper;
 import com.piwik.pagepaths.PagesPathsReducer;
 
@@ -39,13 +39,13 @@ public class ConvertPageTest {
 	public void setUp() {
 	
 		// Set up the mapper test harness.
-		HiveJoinRefactorMapper convertPageMapper = new HiveJoinRefactorMapper();
+		ConvertPageMapper convertPageMapper = new ConvertPageMapper();
 
 		mapDriver = new MapDriver<LongWritable, Text, Text, LongWritable>();
 		mapDriver.setMapper(convertPageMapper);
 
 		// Set up the reducer test harness.
-		HiveJoinRefactorReducer convertPageReducer = new HiveJoinRefactorReducer();
+		ConvertPageReducer convertPageReducer = new ConvertPageReducer();
 		reduceDriver = new ReduceDriver<Text, LongWritable, Text, LongWritable>();
 		reduceDriver.setReducer(convertPageReducer);
 
@@ -67,14 +67,17 @@ public class ConvertPageTest {
 	public void testMapper() throws IOException {
 		
 		//Given
-		String lineHDFS1 = "2345,4,5#3,4,3,4";
-		String lineHDFS2 = "252,5,4#3,4";
-		Text key0 = new Text("5");
-		Text key1 = new Text("4");
-		Text key2 = new Text("3");
-		Text key3 = new Text("4");
-		Text key4 = new Text("2");
+		String lineHDFS1 = "234,35,4,5#3,4,3,4";
+		String lineHDFS2 = "25,42,5,4#3,4";
+		Text key0 = new Text("4");
+		Text key1 = new Text("5");
+		Text key2 = new Text("4");
+		Text key3 = new Text("3");
+		Text key4 = new Text("4");
 		Text key5 = new Text("5");
+		Text key6 = new Text("2");
+		Text key7 = new Text("4");
+		Text key8 = new Text("3");
 		
 		LongWritable value = new LongWritable(1);
 		List<Pair> expectedOutput = new ArrayList<Pair>();
@@ -84,6 +87,9 @@ public class ConvertPageTest {
 		expectedOutput.add(new Pair(key3,new LongWritable(1)));
 		expectedOutput.add(new Pair(key4,new LongWritable(1)));
 		expectedOutput.add(new Pair(key5,new LongWritable(1)));
+		expectedOutput.add(new Pair(key6,new LongWritable(1)));
+		expectedOutput.add(new Pair(key7,new LongWritable(1)));
+		expectedOutput.add(new Pair(key8,new LongWritable(1)));
 		
 		//When		
 		mapDriver.withInput(new LongWritable(1), new Text(lineHDFS1))
@@ -91,13 +97,16 @@ public class ConvertPageTest {
 		
 		//Then		
 		List<Pair> result = mapDriver.run();
-		assertEquals(result.size(),6);
+		assertEquals(result.size(),9);
 		assertEquals(result.get(0).toString(),expectedOutput.get(0).toString());
 		assertEquals(result.get(1).toString(),expectedOutput.get(1).toString());
 		assertEquals(result.get(2).toString(),expectedOutput.get(2).toString());
 		assertEquals(result.get(3).toString(),expectedOutput.get(3).toString());
 		assertEquals(result.get(4).toString(),expectedOutput.get(4).toString());
 		assertEquals(result.get(5).toString(),expectedOutput.get(5).toString());
+		assertEquals(result.get(6).toString(),expectedOutput.get(6).toString());
+		assertEquals(result.get(7).toString(),expectedOutput.get(7).toString());
+		assertEquals(result.get(8).toString(),expectedOutput.get(8).toString());
 	}
 
 	/*
@@ -128,27 +137,27 @@ public class ConvertPageTest {
 	public void testSeveralInputsReducer() throws IOException {
 
 		//Given
-				Text key0 = new Text("0");
-				Text key1 = new Text("1");
+		Text key0 = new Text("0");
+		Text key1 = new Text("1");
 				
-				List<LongWritable> values0 = new ArrayList<LongWritable>();
-				values0.add(new LongWritable(1));
-				values0.add(new LongWritable(2));
+		List<LongWritable> values0 = new ArrayList<LongWritable>();
+		values0.add(new LongWritable(1));
+		values0.add(new LongWritable(2));
 
-				List<LongWritable> values1 = new ArrayList<LongWritable>();
-				values1.add(new LongWritable(1));
-				values1.add(new LongWritable(2));
-				values1.add(new LongWritable(3));
+		List<LongWritable> values1 = new ArrayList<LongWritable>();
+		values1.add(new LongWritable(1));
+		values1.add(new LongWritable(2));
+		values1.add(new LongWritable(3));
 						
-				//When
-				reduceDriver.withInput(key0, values0)
-				.withInput(key1,values1);
+		//When
+		reduceDriver.withInput(key0, values0)
+		.withInput(key1,values1);
 				
-				//Then
-				reduceDriver.withOutput(key0, new LongWritable(3))
-				.withOutput(key1, new LongWritable(6));
+		//Then
+		reduceDriver.withOutput(key0, new LongWritable(3))
+		.withOutput(key1, new LongWritable(6));
 				
-				reduceDriver.runTest();
+		reduceDriver.runTest();
 
 	}
 	

@@ -37,8 +37,8 @@ public class ConvertPageDriver extends Configured implements Tool {
 		FileInputFormat.setInputPaths(job, new Path(args[0]));
 		FileOutputFormat.setOutputPath(job, new Path(args[1]));
 
-		job.setMapperClass(HiveJoinRefactorMapper.class);
-		job.setReducerClass(HiveJoinRefactorReducer.class);
+		job.setMapperClass(ConvertPageMapper.class);
+		job.setReducerClass(ConvertPageReducer.class);
 
 		job.setInputFormatClass(TextInputFormat.class);
 		job.setOutputFormatClass(TextOutputFormat.class);

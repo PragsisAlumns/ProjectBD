@@ -100,8 +100,8 @@ public class HiveJoinRefactorTest {
 		.withInput(key2,values2);
 		
 		//Then
-		reduceDriver.withOutput(new Text("234,35,4,5#3,4,3,4"),new Text(""))
-		.withOutput(new Text("252,5,4#3,4"),new Text(""));
+		reduceDriver.withOutput(new Text("234,35,4,5#3,4,3,4"),new Text(" "))
+		.withOutput(new Text("252,5,4#3,4"),new Text(" "));
 		
 		reduceDriver.runTest();
 	}
@@ -124,8 +124,8 @@ public class HiveJoinRefactorTest {
 		.withInput(new LongWritable(3), new Text(lineHDFS3));
 		
 		//Then
-		mapReduceDriver.withOutput(new Text("234,35,4,5#3,4,3,4"),new Text(""))
-		.withOutput(new Text("252,5,4#3,4"),new Text(""));
+		mapReduceDriver.withOutput(new Text("252,5,4#3,4"),new Text(" "))
+		.withOutput(new Text("234,35,4,5#3,4,3,4"),new Text(" "));
 		
 		mapReduceDriver.runTest();
 

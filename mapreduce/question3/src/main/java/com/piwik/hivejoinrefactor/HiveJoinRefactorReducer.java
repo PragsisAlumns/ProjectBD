@@ -38,7 +38,7 @@ public class HiveJoinRefactorReducer extends Reducer<Text, Text, Text, Text> {
 		convertPages = convertPages.substring(0, convertPages.length()-1);
 		
 	    //Writing value
-		context.write(new Text(keyFields[0]+""+convertPages+""+keyFields[1]), new Text(""));
+		context.write(new Text(keyFields[0]+""+convertPages+""+keyFields[1]), new Text(" "));
 	}
 	
 	

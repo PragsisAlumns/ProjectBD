@@ -20,8 +20,8 @@ import org.apache.log4j.Logger;
 
 import com.piwik.common.IntPairWritable;
 
-public class HiveJoinRefactorMapper extends Mapper<LongWritable, Text, Text, LongWritable> {
-	Logger logger = Logger.getLogger(HiveJoinRefactorMapper.class);
+public class ConvertPageMapper extends Mapper<LongWritable, Text, Text, LongWritable> {
+	Logger logger = Logger.getLogger(ConvertPageMapper.class);
 	
 	@Override
 	public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
@@ -32,35 +32,39 @@ public class HiveJoinRefactorMapper extends Mapper<LongWritable, Text, Text, Lon
 		//Id visit 
 		long idvisit = Long.parseLong(fields[0]);
 
-		//Convert page
-		String convertPage = fields[1];
+		//Convert pages
+		String convertPages = fields[1];
 		
 		//Paths
 		String[] singlePaths = fields[2].split("#");
 		String pairPage;
-		
+			
 		//Generating output
 		for (String path : singlePaths ){ //for each path
 			String[] page = path.split(","); //Split by pages
 			int position = -1;
 			HashMap<String,Long> tempValue = new HashMap<String,Long>();
 			
-			//Looking for the last position for convert page
-			for (int i = page.length-1; i >= 0; i-- ){
-				if (page[i].equals(convertPage)){
-					position = i;
-					break;
+			for (String convertPage : convertPages.split(",")){
+				//Looking for the last position for convert page
+				for (int i = page.length-1; i >= 0; i-- ){
+					if (page[i].equals(convertPage)){
+						if (position<i){
+							position = i;
+							break;
+						}
+					}
 				}
 			}
 			
 			//Generating convert values
-			int iter = 0;
-			while (iter<=position){
+			int iter = position;
+			while (iter>=0){
 				if (tempValue.get(page[iter]) == null){
 					context.write(new Text(page[iter]), new LongWritable(1));
 					tempValue.put(page[iter], 1L);
 				}	
-				iter++;
+				iter--;
 			}	
 		}
 	}
