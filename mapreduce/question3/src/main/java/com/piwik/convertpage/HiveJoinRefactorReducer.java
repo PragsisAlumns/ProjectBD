@@ -20,7 +20,7 @@ import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.Reducer.Context;
 
 
-public class ConvertPageReducer extends Reducer<Text, LongWritable, Text, LongWritable> {
+public class HiveJoinRefactorReducer extends Reducer<Text, LongWritable, Text, LongWritable> {
 
 	
 	@Override

@@ -1,4 +1,4 @@
-package com.piwik.convertpage;
+package com.piwik.hivejoinrefactor;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
@@ -16,8 +16,8 @@ import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
 
 
-public class ConvertPageDriver extends Configured implements Tool {
-	Logger logger = Logger.getLogger(ConvertPageDriver.class);
+public class HiveJoinRefactorDriver extends Configured implements Tool {
+	Logger logger = Logger.getLogger(HiveJoinRefactorDriver.class);
 	
 	@Override
 	public int run(String[] args) throws Exception {
@@ -31,7 +31,7 @@ public class ConvertPageDriver extends Configured implements Tool {
 		
 		// Create the job
 		Job job = Job.getInstance(getConf());
-		job.setJarByClass(ConvertPageDriver.class);
+		job.setJarByClass(HiveJoinRefactorDriver.class);
 		job.setJobName("Question 2: How many routes and visits by route are enabled to find page X ");
 
 		FileInputFormat.setInputPaths(job, new Path(args[0]));
@@ -45,23 +45,18 @@ public class ConvertPageDriver extends Configured implements Tool {
 		
 		//Setting map output 
 		job.setMapOutputKeyClass(Text.class);
-		job.setMapOutputValueClass(LongWritable.class);
+		job.setMapOutputValueClass(Text.class);
 		
 		//Setting reduce output
 		job.setOutputKeyClass(Text.class);
-		job.setOutputValueClass(LongWritable.class);
+		job.setOutputValueClass(Text.class);
 		
-		//Setting partitioner
-		job.setPartitionerClass(ConvertPagePartitioner.class);
 		
-		//Setting combiner
-		job.setCombinerClass(ConvertPageCombiner.class);
-
 		return job.waitForCompletion(true) ? 0 : 1;
 	}
 
 	public static void main(String[] args) throws Exception {
-		int exitCode = ToolRunner.run(new Configuration(), new ConvertPageDriver(), args);
+		int exitCode = ToolRunner.run(new Configuration(), new HiveJoinRefactorDriver(), args);
 		System.exit(exitCode);
 	}
 }

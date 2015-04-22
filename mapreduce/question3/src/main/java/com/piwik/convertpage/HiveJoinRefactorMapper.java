@@ -20,8 +20,8 @@ import org.apache.log4j.Logger;
 
 import com.piwik.common.IntPairWritable;
 
-public class ConvertPageMapper extends Mapper<LongWritable, Text, Text, LongWritable> {
-	Logger logger = Logger.getLogger(ConvertPageMapper.class);
+public class HiveJoinRefactorMapper extends Mapper<LongWritable, Text, Text, LongWritable> {
+	Logger logger = Logger.getLogger(HiveJoinRefactorMapper.class);
 	
 	@Override
 	public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {

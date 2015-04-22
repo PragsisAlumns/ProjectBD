@@ -20,9 +20,9 @@ import org.junit.Test;
 
 import com.piwik.common.IntPairWritable;
 import com.piwik.convertpage.ConvertPageCombiner;
-import com.piwik.convertpage.ConvertPageMapper;
+import com.piwik.convertpage.HiveJoinRefactorMapper;
 import com.piwik.convertpage.ConvertPagePartitioner;
-import com.piwik.convertpage.ConvertPageReducer;
+import com.piwik.convertpage.HiveJoinRefactorReducer;
 import com.piwik.pagepaths.PagesPathsMapper;
 import com.piwik.pagepaths.PagesPathsReducer;
 import com.piwik.totalcounter.TotalCounterPageMapper;

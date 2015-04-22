@@ -20,9 +20,9 @@ import org.junit.Test;
 
 import com.piwik.common.IntPairWritable;
 import com.piwik.convertpage.ConvertPageCombiner;
-import com.piwik.convertpage.ConvertPageMapper;
+import com.piwik.convertpage.HiveJoinRefactorMapper;
 import com.piwik.convertpage.ConvertPagePartitioner;
-import com.piwik.convertpage.ConvertPageReducer;
+import com.piwik.convertpage.HiveJoinRefactorReducer;
 import com.piwik.pagepaths.PagesPathsMapper;
 import com.piwik.pagepaths.PagesPathsReducer;
 
@@ -39,19 +39,18 @@ public class ConvertPageTest {
 	public void setUp() {
 	
 		// Set up the mapper test harness.
-		ConvertPageMapper convertPageMapper = new ConvertPageMapper();
+		HiveJoinRefactorMapper convertPageMapper = new HiveJoinRefactorMapper();
 
 		mapDriver = new MapDriver<LongWritable, Text, Text, LongWritable>();
 		mapDriver.setMapper(convertPageMapper);
 
 		// Set up the reducer test harness.
-		ConvertPageReducer convertPageReducer = new ConvertPageReducer();
+		HiveJoinRefactorReducer convertPageReducer = new HiveJoinRefactorReducer();
 		reduceDriver = new ReduceDriver<Text, LongWritable, Text, LongWritable>();
 		reduceDriver.setReducer(convertPageReducer);
 
 		// Set up the mapper/reducer test harness.
 		ConvertPageCombiner convertPageCombiner = new ConvertPageCombiner();
-		ConvertPagePartitioner routevisitpagepartitioner = new ConvertPagePartitioner();
 		mapReduceDriver = new MapReduceDriver<LongWritable, Text, Text, LongWritable, Text, LongWritable>();
 		mapReduceDriver.setMapper(convertPageMapper);
 		mapReduceDriver.setReducer(convertPageReducer);
