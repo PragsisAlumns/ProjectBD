@@ -67,7 +67,7 @@ public class PagesPathsDriver extends Configured implements Tool {
 		 * last idvisit go to the same reducer.
 		 */
 		job.setPartitionerClass(PairPagePartitioner.class);
-	
+		
 		
 		return job.waitForCompletion(true) ? 0 : 1;
 	}

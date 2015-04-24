@@ -1,0 +1,52 @@
+#########################
+# log_link_visit_action #
+#########################
+drop table piwik_log_link_visit_action;
+CREATE EXTERNAL TABLE piwik_log_link_visit_action (
+idlink_va INT,
+idvisit INT,
+idaction_url INT,
+idaction_url_ref INT
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+LOCATION '/piwik/log_link_visit_action';
+show tables piwik_log_link_visit_action;
+
+#########################
+#     log_conversion    #
+#########################
+drop table piwik_log_conversion;
+CREATE EXTERNAL TABLE piwik_log_conversion (
+idvisit INT,
+idvisitor STRING,
+idaction_url STRING,
+url STRING
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+LOCATION '/piwik/log_conversion';
+show tables piwik_log_conversion;
+
+#########################
+#      log_action       #
+#########################
+drop table piwik_log_action;
+CREATE EXTERNAL TABLE piwik_log_action (
+idaction INT,
+name STRING
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+LOCATION '/piwik/log_action';
+show tables piwik_log_action;
+
+#########################
+#        goal           #
+#########################
+drop table piwik_goal;
+CREATE EXTERNAL TABLE piwik_goal (
+idgoal INT,
+pattern STRING
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+LOCATION '/piwik/goal';
+show tables piwik_goal;
+

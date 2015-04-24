@@ -1,4 +1,4 @@
-package com.piwik.routevisitpage;
+package com.piwik.totalcounter;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
@@ -15,11 +15,9 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
 
-import com.piwik.common.PageRouteWritable;
 
-
-public class RouteVisitPageDriver extends Configured implements Tool {
-	Logger logger = Logger.getLogger(RouteVisitPageDriver.class);
+public class TotalCounterPageDriver extends Configured implements Tool {
+	Logger logger = Logger.getLogger(TotalCounterPageDriver.class);
 	
 	@Override
 	public int run(String[] args) throws Exception {
@@ -33,37 +31,37 @@ public class RouteVisitPageDriver extends Configured implements Tool {
 		
 		// Create the job
 		Job job = Job.getInstance(getConf());
-		job.setJarByClass(RouteVisitPageDriver.class);
+		job.setJarByClass(TotalCounterPageDriver.class);
 		job.setJobName("Question 2: How many routes and visits by route are enabled to find page X ");
 
 		FileInputFormat.setInputPaths(job, new Path(args[0]));
 		FileOutputFormat.setOutputPath(job, new Path(args[1]));
 
-		job.setMapperClass(RouteVisitPageMapper.class);
-		job.setReducerClass(RouteVisitPageReducer.class);
+		job.setMapperClass(TotalCounterPageMapper.class);
+		job.setReducerClass(TotalCounterPageReducer.class);
 
 		job.setInputFormatClass(TextInputFormat.class);
 		job.setOutputFormatClass(TextOutputFormat.class);
 		
 		//Setting map output 
-		job.setMapOutputKeyClass(PageRouteWritable.class);
+		job.setMapOutputKeyClass(Text.class);
 		job.setMapOutputValueClass(LongWritable.class);
 		
 		//Setting reduce output
 		job.setOutputKeyClass(Text.class);
-		job.setOutputValueClass(Text.class);
+		job.setOutputValueClass(LongWritable.class);
 		
 		//Setting partitioner
-		job.setPartitionerClass(RouteVisitPagePartitioner.class);
+		job.setPartitionerClass(TotalCounterPagePartitioner.class);
 		
 		//Setting combiner
-		job.setCombinerClass(RouteVisitPageCombiner.class);
+		job.setCombinerClass(TotalCounterPageCombiner.class);
 
 		return job.waitForCompletion(true) ? 0 : 1;
 	}
 
 	public static void main(String[] args) throws Exception {
-		int exitCode = ToolRunner.run(new Configuration(), new RouteVisitPageDriver(), args);
+		int exitCode = ToolRunner.run(new Configuration(), new TotalCounterPageDriver(), args);
 		System.exit(exitCode);
 	}
 }
