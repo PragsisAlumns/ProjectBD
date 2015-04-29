@@ -1,0 +1,63 @@
+
+<workflow-app name="Question 1" xmlns="uri:oozie:workflow:0.4">
+    <start to="VisitedPages"/>
+    <action name="VisitedPages">
+        <sqoop xmlns="uri:oozie:sqoop-action:0.2">
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <prepare>
+                  <delete path="${nameNode}${log_link_visit_action}"/>
+            </prepare>
+              <arg>import</arg>
+              <arg>--connect</arg>
+              <arg>jdbc:mysql://dev.loudacre.com/test</arg>
+              <arg>--username</arg>
+              <arg>training</arg>
+              <arg>--password</arg>
+              <arg>training</arg>
+              <arg>--query</arg>
+              <arg>SELECT idlink_va, idvisit, idaction_url, idaction_url_ref FROM piwik_log_link_visit_action WHERE $CONDITIONS</arg>
+              <arg>--split-by</arg>
+              <arg>idlink_va</arg>
+              <arg>--target-dir</arg>
+              <arg>${log_link_visit_action}</arg>
+              <arg>--null-non-string</arg>
+              <arg>\\N</arg>
+        </sqoop>
+        <ok to="PagePaths"/>
+        <error to="kill"/>
+    </action>
+    <action name="PagePaths">
+        <java>
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <prepare>
+                  <delete path="${nameNode}${paths_by_visit}"/>
+            </prepare>
+            <main-class>com.piwik.pagepaths.PagesPathsDriver</main-class>
+            <arg>${log_link_visit_action}</arg>
+            <arg>${paths_by_visit}</arg>
+        </java>
+        <ok to="CountPairPages"/>
+        <error to="kill"/>
+    </action>
+    <action name="CountPairPages">
+        <java>
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <prepare>
+                  <delete path="${nameNode}${count_visit_pair_page}"/>
+            </prepare>
+            <main-class>com.piwik.pairpagebyvisit.PairPageByVisitDriver</main-class>
+            <arg>${paths_by_visit}</arg>
+            <arg>${count_visit_pair_page}</arg>
+            <capture-output/>
+        </java>
+        <ok to="end"/>
+        <error to="kill"/>
+    </action>
+    <kill name="kill">
+        <message>Action failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
+    </kill>
+    <end name="end"/>
+</workflow-app>
