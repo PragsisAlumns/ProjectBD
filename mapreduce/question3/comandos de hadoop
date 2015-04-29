@@ -1,4 +1,0 @@
-
-Instruccion para crear la misma salida que tiene joinpathsconversion, pero con todos las paginas que convierten por usuario que convierte.
-
-hadoop jar target/convert-page-1.0-SNAPSHOT.jar com.piwik.hivejoinrefactor HiveJoinRefactorDriver /piwik/question3/joinpathsconversion /piwik/question3/joinsinglepathsbyconversion
