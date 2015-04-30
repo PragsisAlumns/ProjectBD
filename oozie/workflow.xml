@@ -1,58 +1,64 @@
-
-<workflow-app name="Question 1" xmlns="uri:oozie:workflow:0.4">
-    <start to="VisitedPages"/>
-    <action name="VisitedPages">
-        <sqoop xmlns="uri:oozie:sqoop-action:0.2">
-            <job-tracker>${jobTracker}</job-tracker>
-            <name-node>${nameNode}</name-node>
-            <prepare>
-                  <delete path="${nameNode}${log_link_visit_action}"/>
-            </prepare>
-              <arg>import</arg>
-              <arg>--connect</arg>
-              <arg>jdbc:mysql://dev.loudacre.com/test</arg>
-              <arg>--username</arg>
-              <arg>training</arg>
-              <arg>--password</arg>
-              <arg>training</arg>
-              <arg>--query</arg>
-              <arg>SELECT idlink_va, idvisit, idaction_url, idaction_url_ref FROM piwik_log_link_visit_action WHERE $CONDITIONS</arg>
-              <arg>--split-by</arg>
-              <arg>idlink_va</arg>
-              <arg>--target-dir</arg>
-              <arg>${log_link_visit_action}</arg>
-              <arg>--null-non-string</arg>
-              <arg>\\N</arg>
-        </sqoop>
-        <ok to="PagePaths"/>
+<workflow-app name="Piwik" xmlns="uri:oozie:workflow:0.4">
+    <start to="Question1"/>
+    <action name="Question1">
+        <sub-workflow>
+            <app-path>${nameNode}/user/hue/oozie/workspaces/_training_-oozie-36-1430065001.14</app-path>
+              <propagate-configuration/>
+            <configuration>
+                <property>
+                    <name>${log_link_visit_action}</name>
+                    <value>/piwik/log_link_visit_action</value>
+                </property>
+                <property>
+                    <name>${paths_by_visit}</name>
+                    <value>/piwik/paths_by_visit</value>
+                </property>
+                <property>
+                    <name>${count_visit_pair_page}</name>
+                    <value>/piwik/count_visit_pair_page</value>
+                </property>
+            </configuration>
+        </sub-workflow>
+        <ok to="Question2"/>
         <error to="kill"/>
     </action>
-    <action name="PagePaths">
-        <java>
-            <job-tracker>${jobTracker}</job-tracker>
-            <name-node>${nameNode}</name-node>
-            <prepare>
-                  <delete path="${nameNode}${paths_by_visit}"/>
-            </prepare>
-            <main-class>com.piwik.pagepaths.PagesPathsDriver</main-class>
-            <arg>${log_link_visit_action}</arg>
-            <arg>${paths_by_visit}</arg>
-        </java>
-        <ok to="CountPairPages"/>
+    <action name="Question2">
+        <sub-workflow>
+            <app-path>${nameNode}/user/hue/oozie/workspaces/_training_-oozie-40-1430067639.48</app-path>
+              <propagate-configuration/>
+            <configuration>
+                <property>
+                    <name> ${number_route_to_page} </name>
+                    <value></value>
+                </property>
+                <property>
+                    <name>${paths_by_visit}</name>
+                    <value></value>
+                </property>
+            </configuration>
+        </sub-workflow>
+        <ok to="Question3-5"/>
         <error to="kill"/>
     </action>
-    <action name="CountPairPages">
-        <java>
-            <job-tracker>${jobTracker}</job-tracker>
-            <name-node>${nameNode}</name-node>
-            <prepare>
-                  <delete path="${nameNode}${count_visit_pair_page}"/>
-            </prepare>
-            <main-class>com.piwik.pairpagebyvisit.PairPageByVisitDriver</main-class>
-            <arg>${paths_by_visit}</arg>
-            <arg>${count_visit_pair_page}</arg>
-            <capture-output/>
-        </java>
+    <action name="Question3-5">
+        <sub-workflow>
+            <app-path>${nameNode}/user/hue/oozie/workspaces/_training_-oozie-47-1430196181.16</app-path>
+              <propagate-configuration/>
+        </sub-workflow>
+        <ok to="Question4"/>
+        <error to="kill"/>
+    </action>
+    <action name="Question4">
+        <sub-workflow>
+            <app-path>${nameNode}/user/hue/oozie/workspaces/_training_-oozie-45-1430084657.29</app-path>
+              <propagate-configuration/>
+            <configuration>
+                <property>
+                    <name>${average_page}</name>
+                    <value></value>
+                </property>
+            </configuration>
+        </sub-workflow>
         <ok to="end"/>
         <error to="kill"/>
     </action>

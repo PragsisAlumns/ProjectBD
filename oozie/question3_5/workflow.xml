@@ -1,0 +1,104 @@
+<workflow-app name="Question 3-5" xmlns="uri:oozie:workflow:0.4">
+    <start to="LogConversion"/>
+    <action name="LogConversion">
+        <sqoop xmlns="uri:oozie:sqoop-action:0.2">
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <prepare>
+                  <delete path="${nameNode}/piwik/log_conversion"/>
+            </prepare>
+              <arg>import</arg>
+              <arg>--connect</arg>
+              <arg>jdbc:mysql://dev.loudacre.com/test</arg>
+              <arg>--username</arg>
+              <arg>training</arg>
+              <arg>--password</arg>
+              <arg>training</arg>
+              <arg>--query</arg>
+              <arg>SELECT idvisit, idvisitor, idaction_url, url FROM piwik_log_conversion WHERE $CONDITIONS</arg>
+              <arg>--split-by</arg>
+              <arg>idvisit</arg>
+              <arg>--target-dir</arg>
+              <arg>/piwik/log_conversion</arg>
+              <arg>--null-non-string</arg>
+              <arg>\\N</arg>
+        </sqoop>
+        <ok to="JoinPathsConversion"/>
+        <error to="kill"/>
+    </action>
+    <action name="JoinPathsConversion">
+        <hive xmlns="uri:oozie:hive-action:0.2">
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <prepare>
+                  <delete path="${nameNode}/piwik/joinpathsconversion"/>
+            </prepare>
+              <job-xml>lib/hive-site.xml</job-xml>
+            <script>lib/hive_external_piwik_tables_for_question3.sql</script>
+            <file>lib/hive-site.xml#hive-site.xml</file>
+        </hive>
+        <ok to="TotalCountPage"/>
+        <error to="kill"/>
+    </action>
+    <action name="TotalCountPage">
+        <java>
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <prepare>
+                  <delete path="${nameNode}/piwik/totalcountpage"/>
+            </prepare>
+            <main-class>com.piwik.totalcounter.TotalCounterPageDriver</main-class>
+            <arg>${paths_by_visit}</arg>
+            <arg>/piwik/totalcountpage</arg>
+        </java>
+        <ok to="HiveJoinRefactor"/>
+        <error to="kill"/>
+    </action>
+    <action name="HiveJoinRefactor">
+        <java>
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <prepare>
+                  <delete path="${nameNode}/piwik/joinsinglepathsbyconversion"/>
+            </prepare>
+            <main-class>com.piwik.hivejoinrefactor.HiveJoinRefactorDriver</main-class>
+            <arg>/piwik/joinpathsconversion</arg>
+            <arg>/piwik/joinsinglepathsbyconversion</arg>
+        </java>
+        <ok to="ConvertPage"/>
+        <error to="kill"/>
+    </action>
+    <action name="ConvertPage">
+        <java>
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <prepare>
+                  <delete path="${nameNode}/piwik/pageconversion"/>
+            </prepare>
+            <main-class>com.piwik.convertpage.ConvertPageDriver</main-class>
+            <arg>/piwik/joinsinglepathsbyconversion</arg>
+            <arg>/piwik/pageconversion</arg>
+        </java>
+        <ok to="JoinPagesConversion"/>
+        <error to="kill"/>
+    </action>
+    <action name="JoinPagesConversion">
+        <hive xmlns="uri:oozie:hive-action:0.2">
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <prepare>
+                  <delete path="${nameNode}/piwik/conversionratiobypage"/>
+            </prepare>
+              <job-xml>lib/hive-site.xml</job-xml>
+            <script>lib/join_pages_conversion.sql</script>
+            <file>lib/hive-site.xml#hive-site.xml</file>
+        </hive>
+        <ok to="end"/>
+        <error to="kill"/>
+    </action>
+    <kill name="kill">
+        <message>Action failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
+    </kill>
+    <end name="end"/>
+</workflow-app>
+
