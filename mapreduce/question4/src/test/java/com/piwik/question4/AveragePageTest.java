@@ -23,8 +23,7 @@ import com.piwik.averagepage.AveragePageMapper;
 import com.piwik.averagepage.AveragePagePartitioner;
 import com.piwik.averagepage.AveragePageReducer;
 import com.piwik.common.PageRouteWritable;
-import com.piwik.pagepaths.PagesPathsMapper;
-import com.piwik.pagepaths.PagesPathsReducer;
+
 
 public class AveragePageTest {
 

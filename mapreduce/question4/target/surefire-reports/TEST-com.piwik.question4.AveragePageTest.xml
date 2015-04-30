@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite failures="0" time="6.832" errors="0" skipped="0" tests="4" name="com.piwik.question4.AveragePageTest">
+<testsuite failures="0" time="2.219" errors="0" skipped="0" tests="4" name="com.piwik.question4.AveragePageTest">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="/usr/java/jdk1.6.0_31/jre/lib/amd64"/>
@@ -32,7 +32,7 @@
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="os.version" value="2.6.32-358.23.2.el6.x86_64"/>
     <property name="user.home" value="/home/training"/>
-    <property name="user.timezone" value="Europe/Madrid"/>
+    <property name="user.timezone" value="US/Pacific-New"/>
     <property name="java.awt.printerjob" value="sun.print.PSPrinterJob"/>
     <property name="file.encoding" value="UTF-8"/>
     <property name="java.specification.version" value="1.6"/>
@@ -59,8 +59,8 @@
     <property name="sun.desktop" value="gnome"/>
     <property name="sun.cpu.isalist" value=""/>
   </properties>
-  <testcase time="4.94" classname="com.piwik.question4.AveragePageTest" name="testMapper"/>
-  <testcase time="0.88" classname="com.piwik.question4.AveragePageTest" name="testAverageOneUserReducer"/>
-  <testcase time="0.548" classname="com.piwik.question4.AveragePageTest" name="testReducer"/>
-  <testcase time="0.464" classname="com.piwik.question4.AveragePageTest" name="testMapReduce"/>
+  <testcase time="1.536" classname="com.piwik.question4.AveragePageTest" name="testMapper"/>
+  <testcase time="0.287" classname="com.piwik.question4.AveragePageTest" name="testAverageOneUserReducer"/>
+  <testcase time="0.193" classname="com.piwik.question4.AveragePageTest" name="testReducer"/>
+  <testcase time="0.203" classname="com.piwik.question4.AveragePageTest" name="testMapReduce"/>
 </testsuite>

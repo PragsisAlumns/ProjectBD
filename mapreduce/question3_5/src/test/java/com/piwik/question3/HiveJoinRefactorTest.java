@@ -22,8 +22,7 @@ import com.piwik.common.IntPairWritable;
 import com.piwik.convertpage.ConvertPageCombiner;
 import com.piwik.hivejoinrefactor.HiveJoinRefactorMapper;
 import com.piwik.hivejoinrefactor.HiveJoinRefactorReducer;
-import com.piwik.pagepaths.PagesPathsMapper;
-import com.piwik.pagepaths.PagesPathsReducer;
+
 
 public class HiveJoinRefactorTest {
 

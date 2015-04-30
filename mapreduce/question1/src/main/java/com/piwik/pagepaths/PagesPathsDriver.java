@@ -23,14 +23,14 @@ public class PagesPathsDriver extends Configured implements Tool {
 	@Override
 	public int run(String[] args) throws Exception {
 		if (args.length != 2) {
-			System.out.printf("Usage: CountPairPageDriver <input dir> <output dir> \n");
+			System.out.printf("Usage: PagesPathsDriver <input dir> <output dir> \n");
 			return -1;
 		}
 		
 		// Create the job
 		Job job = Job.getInstance(getConf());
 		job.setJarByClass(PagesPathsDriver.class);
-		job.setJobName("Question 1: How many users are visiting page X and after page Y");
+		job.setJobName("Question 1: Create the navigation path followed in th web");
 
 		FileInputFormat.setInputPaths(job, new Path(args[0]));
 		FileOutputFormat.setOutputPath(job, new Path(args[1]));

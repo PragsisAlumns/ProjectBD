@@ -19,8 +19,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.piwik.common.PageRouteWritable;
-import com.piwik.pagepaths.PagesPathsMapper;
-import com.piwik.pagepaths.PagesPathsReducer;
 import com.piwik.routevisitpage.RouteVisitPageCombiner;
 import com.piwik.routevisitpage.RouteVisitPageMapper;
 import com.piwik.routevisitpage.RouteVisitPagePartitioner;

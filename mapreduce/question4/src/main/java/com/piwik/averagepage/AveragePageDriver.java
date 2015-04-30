@@ -24,7 +24,7 @@ public class AveragePageDriver extends Configured implements Tool {
 	@Override
 	public int run(String[] args) throws Exception {
 		if (args.length != 2) {
-			System.out.printf("Usage: CountPairPageDriver <input dir> <output dir> \n");
+			System.out.printf("Usage: AveragePageDriver <input dir> <output dir> \n");
 			return -1;
 		}
 		
@@ -34,7 +34,7 @@ public class AveragePageDriver extends Configured implements Tool {
 		// Create the job
 		Job job = Job.getInstance(getConf());
 		job.setJarByClass(AveragePageDriver.class);
-		job.setJobName("Question 2: How many routes and visits by route are enabled to find page X ");
+		job.setJobName("Question 4: What is the average of pages visited by users converters? ");
 
 		FileInputFormat.setInputPaths(job, new Path(args[0]));
 		FileOutputFormat.setOutputPath(job, new Path(args[1]));

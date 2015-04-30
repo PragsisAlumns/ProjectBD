@@ -24,7 +24,7 @@ public class PairPageByVisitDriver extends Configured implements Tool {
 	@Override
 	public int run(String[] args) throws Exception {
 		if (args.length != 2) {
-			System.out.printf("Usage: CountPairPageDriver <input dir> <output dir> \n");
+			System.out.printf("Usage: PairPageByVisitDriver <input dir> <output dir> \n");
 			return -1;
 		}
 		

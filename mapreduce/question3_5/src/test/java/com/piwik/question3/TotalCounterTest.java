@@ -23,8 +23,6 @@ import com.piwik.convertpage.ConvertPageCombiner;
 import com.piwik.convertpage.ConvertPageMapper;
 import com.piwik.convertpage.ConvertPagePartitioner;
 import com.piwik.convertpage.ConvertPageReducer;
-import com.piwik.pagepaths.PagesPathsMapper;
-import com.piwik.pagepaths.PagesPathsReducer;
 import com.piwik.totalcounter.TotalCounterPageMapper;
 import com.piwik.totalcounter.TotalCounterPageReducer;
 

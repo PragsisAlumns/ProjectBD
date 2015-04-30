@@ -22,7 +22,7 @@ public class HiveJoinRefactorDriver extends Configured implements Tool {
 	@Override
 	public int run(String[] args) throws Exception {
 		if (args.length != 2) {
-			System.out.printf("Usage: CountPairPageDriver <input dir> <output dir> \n");
+			System.out.printf("Usage: HiveJoinRefactorDriver <input dir> <output dir> \n");
 			return -1;
 		}
 		
@@ -32,7 +32,7 @@ public class HiveJoinRefactorDriver extends Configured implements Tool {
 		// Create the job
 		Job job = Job.getInstance(getConf());
 		job.setJarByClass(HiveJoinRefactorDriver.class);
-		job.setJobName("Question 2: How many routes and visits by route are enabled to find page X ");
+		job.setJobName("Question 3_5: Conversion pages by user visits id and path followed ");
 
 		FileInputFormat.setInputPaths(job, new Path(args[0]));
 		FileOutputFormat.setOutputPath(job, new Path(args[1]));
