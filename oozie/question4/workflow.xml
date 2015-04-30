@@ -1,0 +1,21 @@
+<workflow-app name="Question 4" xmlns="uri:oozie:workflow:0.4">
+    <start to="AveragePages"/>
+    <action name="AveragePages">
+        <java>
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <prepare>
+                  <delete path="${nameNode}${average_page}"/>
+            </prepare>
+            <main-class>com.piwik.averagepage.AveragePageDriver</main-class>
+            <arg>/piwik/joinsinglepathsbyconversion</arg>
+            <arg>${average_page}</arg>
+        </java>
+        <ok to="end"/>
+        <error to="kill"/>
+    </action>
+    <kill name="kill">
+        <message>Action failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
+    </kill>
+    <end name="end"/>
+</workflow-app>

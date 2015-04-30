@@ -1,0 +1,22 @@
+<workflow-app name="Question 2" xmlns="uri:oozie:workflow:0.4">
+    <start to="RouteVisitToArrivePage"/>
+    <action name="RouteVisitToArrivePage">
+        <java>
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <prepare>
+                  <delete path="${nameNode}${number_route_to_page} "/>
+            </prepare>
+            <main-class>com.piwik.routevisitpage.RouteVisitPageDriver</main-class>
+            <arg>${paths_by_visit}</arg>
+            <arg>${number_route_to_page}</arg>
+        </java>
+        <ok to="end"/>
+        <error to="kill"/>
+    </action>
+    <kill name="kill">
+        <message>Action failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
+    </kill>
+    <end name="end"/>
+</workflow-app>
+
