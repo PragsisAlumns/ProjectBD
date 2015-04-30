@@ -1,6 +1,3 @@
-#########################
-#     paths_by_visit    #
-#########################
 drop table piwik_paths_by_visit;
 CREATE EXTERNAL TABLE piwik_paths_by_visit (
 idvisit BIGINT,
@@ -9,9 +6,6 @@ paths STRING
 ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
 LOCATION '/piwik/paths_by_visit';
 
-#########################
-#     log_conversion    #
-#########################
 drop table piwik_log_conversion;
 CREATE EXTERNAL TABLE piwik_log_conversion (
 idvisit BIGINT,
