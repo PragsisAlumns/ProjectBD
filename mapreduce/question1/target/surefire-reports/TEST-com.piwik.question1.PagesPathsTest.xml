@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite failures="0" time="1.987" errors="0" skipped="0" tests="5" name="com.piwik.question1.PagesPathsTest">
+<testsuite failures="0" time="0.682" errors="0" skipped="0" tests="5" name="com.piwik.question1.PagesPathsTest">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="/usr/java/jdk1.6.0_31/jre/lib/amd64"/>
@@ -32,7 +32,7 @@
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="os.version" value="2.6.32-358.23.2.el6.x86_64"/>
     <property name="user.home" value="/home/training"/>
-    <property name="user.timezone" value="Europe/Madrid"/>
+    <property name="user.timezone" value="US/Pacific-New"/>
     <property name="java.awt.printerjob" value="sun.print.PSPrinterJob"/>
     <property name="file.encoding" value="UTF-8"/>
     <property name="java.specification.version" value="1.6"/>
@@ -59,9 +59,9 @@
     <property name="sun.desktop" value="gnome"/>
     <property name="sun.cpu.isalist" value=""/>
   </properties>
-  <testcase time="0.351" classname="com.piwik.question1.PagesPathsTest" name="testMapper"/>
-  <testcase time="0.604" classname="com.piwik.question1.PagesPathsTest" name="testOnlyTwoPagesReducer"/>
-  <testcase time="0.411" classname="com.piwik.question1.PagesPathsTest" name="testReducer"/>
-  <testcase time="0.264" classname="com.piwik.question1.PagesPathsTest" name="testMapReduce"/>
-  <testcase time="0.357" classname="com.piwik.question1.PagesPathsTest" name="testReducerWithSeveralPathsForTheSameVisit"/>
+  <testcase time="0.148" classname="com.piwik.question1.PagesPathsTest" name="testMapper"/>
+  <testcase time="0.125" classname="com.piwik.question1.PagesPathsTest" name="testOnlyTwoPagesReducer"/>
+  <testcase time="0.127" classname="com.piwik.question1.PagesPathsTest" name="testReducer"/>
+  <testcase time="0.158" classname="com.piwik.question1.PagesPathsTest" name="testMapReduce"/>
+  <testcase time="0.124" classname="com.piwik.question1.PagesPathsTest" name="testReducerWithSeveralPathsForTheSameVisit"/>
 </testsuite>

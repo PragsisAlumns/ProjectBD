@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite failures="0" time="5.125" errors="0" skipped="0" tests="3" name="com.piwik.question3.HiveJoinRefactorTest">
+<testsuite failures="0" time="1.745" errors="0" skipped="0" tests="3" name="com.piwik.question3.HiveJoinRefactorTest">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="/usr/java/jdk1.6.0_31/jre/lib/amd64"/>
@@ -32,7 +32,7 @@
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="os.version" value="2.6.32-358.23.2.el6.x86_64"/>
     <property name="user.home" value="/home/training"/>
-    <property name="user.timezone" value="Europe/Madrid"/>
+    <property name="user.timezone" value="US/Pacific-New"/>
     <property name="java.awt.printerjob" value="sun.print.PSPrinterJob"/>
     <property name="file.encoding" value="UTF-8"/>
     <property name="java.specification.version" value="1.6"/>
@@ -59,7 +59,7 @@
     <property name="sun.desktop" value="gnome"/>
     <property name="sun.cpu.isalist" value=""/>
   </properties>
-  <testcase time="4.272" classname="com.piwik.question3.HiveJoinRefactorTest" name="testMapper"/>
-  <testcase time="0.452" classname="com.piwik.question3.HiveJoinRefactorTest" name="testReducer"/>
-  <testcase time="0.401" classname="com.piwik.question3.HiveJoinRefactorTest" name="testMapReduce"/>
+  <testcase time="1.314" classname="com.piwik.question3.HiveJoinRefactorTest" name="testMapper"/>
+  <testcase time="0.244" classname="com.piwik.question3.HiveJoinRefactorTest" name="testReducer"/>
+  <testcase time="0.187" classname="com.piwik.question3.HiveJoinRefactorTest" name="testMapReduce"/>
 </testsuite>
